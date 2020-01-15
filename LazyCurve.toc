@@ -1,6 +1,6 @@
-## Interface: 80205
+## Interface: 80300
 ## Title: LazyCurve
-## Version: 2.0.3
+## Version: @project-version@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
 ## Author: Numy
 ## X-License: GNU General Public License version 3 (GPLv3)
@@ -9,10 +9,7 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: true
 
-#@no-lib-strip@
 embeds.xml
-#@end-no-lib-strip@
-
 ordered_table.lua
 data.lua
 core.lua
