@@ -2,15 +2,17 @@ LazyCurveData = {}
 
 --/run LazyCurve.core.getAllActivityInfo(_, 0, 3)
 LazyCurveData.raidActivityTable =  {
+    [687] = "NYA",
+    [686] = "NYA",
+    [685] = "NYA", -- probably mythic
 
     [671] = "TEP",
     [672] = "TEP",
-    [673] = "TEP", --probably mythic
-
+    [670] = "TEP",
 
     [668] = "COS",
     [667] = "COS",
-    [666] = "COS", -- probably mythic
+    [666] = "COS",
 
     [663] = "BOD",
     [664] = "BOD",
@@ -67,7 +69,13 @@ masterTable.keyS3 = { --bfa season 3
     13781, --key 15
 }
 
+masterTable.keyS4 = { --bfa season 4
+    14144, --key 10
+    14145, --key 15
+}
+
 masterTable.raids = {
+    "NYA",
     "TEP",
     "COS",
     "BOD",
@@ -80,6 +88,7 @@ masterTable.raids = {
 }
 
 masterTable.finalBoss = {
+    NYA = "nzoth",
     TEP = "azshara",
     COS = "uunat",
     BOD = "jaina",
@@ -89,6 +98,25 @@ masterTable.finalBoss = {
     NH = "guldan",
     TOV = "helya",
     EN = "xavius",
+}
+
+masterTable.NYA = { --first 3 are nm, curve and edge; rest is mythic
+    13725, --nm/lfr n'zoth
+    14068, --curve
+    14069, --edge
+    14041, --wrathion
+    14043, --maut
+    14044, --prophet skitra
+    14045, --dark inquisitor xanesh
+    14046, --hivemind
+    14048, --shad'har
+    14049, --drest'agath
+    14050, --vexiona
+    14051, --ra=den
+    14052, --il'gynoth
+    14054, --carapace of n'zoth
+    14055, --n'zoth
+    14069, --edge
 }
 
 masterTable.TEP = { --first 3 are nm, curve and edge; rest is mythic
