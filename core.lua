@@ -86,7 +86,7 @@ LazyCurve.arenaMaster = arenaMaster
 LazyCurve.curveTable = curveTable
 LazyCurve.PvPTable = PvPTable
 
-local currentSeason = 2;
+local currentSeason = 4;
 
 --/run LazyCurve.core.getAllCategoryInfo()
 local dungeonCatID = 2
