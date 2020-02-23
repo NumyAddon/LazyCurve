@@ -1,5 +1,20 @@
 LazyCurveData = {}
 
+LazyCurveData.defaultCurve = 14068 -- latest curve
+LazyCurveData.defaultEdge = 14069 -- latest edge
+LazyCurveData.arenaMaster = 1174
+LazyCurveData.currentSeason = 4;
+
+--/run LazyCurve.core.getAllCategoryInfo()
+LazyCurveData.dungeonCatID = 2
+LazyCurveData.raidCatID = 3
+LazyCurveData.pvpCatID = {
+    RankedArena = 4,
+    Arena = 7,
+    BG = 8,
+    RankedBG = 9,
+}
+
 --/run LazyCurve.core.getAllActivityInfo(_, 0, 3)
 LazyCurveData.raidActivityTable =  {
     [687] = "NYA",
@@ -101,7 +116,7 @@ masterTable.finalBoss = {
 }
 
 masterTable.NYA = { --first 3 are nm, curve and edge; rest is mythic
-    13725, --nm/lfr n'zoth
+    14196, --nm/lfr n'zoth
     14068, --curve
     14069, --edge
     14041, --wrathion

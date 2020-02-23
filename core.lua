@@ -67,35 +67,19 @@ local strupper = strupper
 local GetAchievementLink = GetAchievementLink
 
 local prefix = "<LazyCurve> "
-LazyCurveDB = {
+LazyCurveDB = LazyCurveDB or {
     advertise = true,
     whisperOnApply = true,
     mythicThreshold = 2
 }
 local downloadlink = "https://www.curseforge.com/wow/addons/lazycurve"
 
-local defaultCurve = 13784 --latest curve
-local defaultEdge = 13785 -- latest edge
-local arenaMaster = 1174
-local curveTable
-local PvPTable
+local curveTable = {}
+local PvPTable = {}
+
 LazyCurve.promote = LazyCurveDB.advertise
-LazyCurve.defaultCurve = defaultCurve
-LazyCurve.defaultEdge = defaultEdge
-LazyCurve.arenaMaster = arenaMaster
 LazyCurve.curveTable = curveTable
 LazyCurve.PvPTable = PvPTable
-
-local currentSeason = 4;
-
---/run LazyCurve.core.getAllCategoryInfo()
-local dungeonCatID = 2
-local raidCatID = 3
-local pvpCatID = {}
-pvpCatID["RankedArena"] = 4
-pvpCatID["Arena"] = 7
-pvpCatID["BG"] = 8
-pvpCatID["RankedBG"] = 9
 
 -- data management/lookup functions
 function core:getHighestRaidFinalBossAchievement(raidname)
@@ -131,7 +115,7 @@ end
 function core:getHighestKeystoneAchievement(season)
     local retID
     local i = 0
-    retID = masterTable["keyS" .. currentSeason][#masterTable["keyS" .. currentSeason]]
+    retID = masterTable["keyS" .. LazyCurveData.currentSeason][#masterTable["keyS" .. LazyCurveData.currentSeason]]
     while(masterTable["keyS" .. i]) do
         if(season == nil or season == i) then
              for k, chievoID in pairs(masterTable["keyS" .. i]) do
@@ -156,24 +140,24 @@ function core:getCurveTable(filter)
             end
             t[raidname.."curve"] = masterTable[raidname][2]
             t[raidname.."edge"] = masterTable[raidname][3]
-            t[raidname.."mythic"] = core.getHighestMythicAchievement(self,raidname)
+            t[raidname.."mythic"] = core:getHighestMythicAchievement(raidname)
             
             --nickname
             if(filter == "nofilter") then
                 t[masterTable.finalBoss[raidname].."normal"] = masterTable[raidname][1]
                 t[masterTable.finalBoss[raidname].."curve"] = masterTable[raidname][2]
                 t[masterTable.finalBoss[raidname].."edge"] = masterTable[raidname][3]
-                t[masterTable.finalBoss[raidname].."mythic"] = core.getHighestMythicAchievement(self,raidname)
+                t[masterTable.finalBoss[raidname].."mythic"] = core:getHighestMythicAchievement(raidname)
             end
         end
         if(filter == "nofilter") then
-            t["curve"] = defaultCurve
-            t["edge"] = defaultEdge
+            t["curve"] = LazyCurveData.defaultCurve
+            t["edge"] = LazyCurveData.defaultEdge
         end
     end
     
     if(filter == "nofilter" or filter == "dungeons" or filter == "all") then
-        --t["KEYSTONE"] = core.getHighestKeystoneAchievement(self)
+        --t["KEYSTONE"] = core:getHighestKeystoneAchievement()
         if(filter == "nofilter") then 
             t["KEY2"] = masterTable.keyS0[1]
             t["KEY5"] = masterTable.keyS0[2]
@@ -181,11 +165,11 @@ function core:getCurveTable(filter)
             t["KEY15"] = masterTable.keyS0[4]
             local i = 0
             while(masterTable['keyS' .. i]) do
-               t["KEYS" .. i] = core.getHighestKeystoneAchievement(self, i)
+               t["KEYS" .. i] = core:getHighestKeystoneAchievement(i)
                 i = i + 1
             end
         end
-        t["KEY"] = core.getHighestKeystoneAchievement(self, nil)
+        t["KEY"] = core:getHighestKeystoneAchievement(nil)
     end
     return t
 end
@@ -232,7 +216,7 @@ function core:getPvPTable(filter)
         t["Arena3V3"] = core.getHighestPvPAchievement(self, "3V3")
         t["ArenaTop"] = core.getHighestPvPAchievement(self, "Arena%")
         t["ArenaWins"] = core.getHighestPvPAchievement(self, "ArenaWins")
-        t["ArenaMaster"] = arenaMaster
+        t["ArenaMaster"] = LazyCurveData.defaultEdge
     end
     if(filter == "nofilter" or filter == "bg") then
         t["RBGRating"] = core.getHighestPvPAchievement(self, "RBGRating")
@@ -449,12 +433,12 @@ end
 function core:getFilteredTable(activityID)
     local fullName, difficulty, catID, _, _, _, minLevel, _ = C_LFGList.GetActivityInfo(activityID)
     local supportedActivity = false
-    if(catID == dungeonCatID) then --dungeon chievos
+    if(catID == LazyCurveData.dungeonCatID) then --dungeon chievos
         if(minLevel >= 110) then
             supportedActivity = true
             filteredTable = core.getCurveTable(self,"dungeons")
         end
-    elseif(catID == raidCatID) then --raid chievos
+    elseif(catID == LazyCurveData.raidCatID) then --raid chievos
         supportedActivity = true
         if(raidActivityTable[activityID] ~= nil) then
             filteredTable = ordered_table.new{
@@ -478,8 +462,8 @@ function core:getFilteredTable(activityID)
         end
     end
     
-    if(not supportedActivity) then --check pvpCatID
-        for catName, catNumber in pairs(pvpCatID) do
+    if(not supportedActivity) then --check LazyCurveData.pvpCatID
+        for catName, catNumber in pairs(LazyCurveData.pvpCatID) do
             if(catID == catNumber) then
                 if(string_find(catName, "BG")) then
                     filteredTable = core.getPvPTable(self, "bg")
