@@ -1,1 +1,2 @@
-added ny'alotha and m+ season 4
+moved around some code to make it easier to maintain
+fixed issues with Ny'alotha
