@@ -65,6 +65,7 @@ local pairs = pairs
 local string_find = string.find
 local strupper = strupper
 local GetAchievementLink = GetAchievementLink
+local GetAchievementInfo = GetAchievementInfo
 
 local prefix = "<LazyCurve> "
 LazyCurveDB = LazyCurveDB or {
@@ -241,6 +242,14 @@ function core:OnInitialize()
     self:RawHook("BNSendWhisper", true)
     curveTable = core.getCurveTable(self, "nofilter")
     PvPTable = core.getPvPTable(self, "nofilter")
+    LazyCurve.curveTable = curveTable
+    LazyCurve.PvPTable = PvPTable
+    C_Timer.After(15, function()
+        --for some reason, some achievements don't properly load the first time you log in; so maybe delaying it helps
+        curveTable = core.getCurveTable(self, "nofilter")
+        PvPTable = core.getPvPTable(self, "nofilter")
+    end
+    )
     
     local configChanged = false;
     if(LazyCurveDB == nil) then
@@ -366,16 +375,16 @@ function core:onSignup()
                 msg = prefix .. msg;
             end
             if(chievo1 and completed1) then
-                msg = msg .. ' ' .. GetAchievementLink(chievo1)
+                msg = msg .. GetAchievementLink(chievo1)
             end
             if(chievo2 and completed2 and (chievo1 ~= chievo2)) then
-                msg = msg .. ' ' .. GetAchievementLink(chievo2)
+                msg = msg .. GetAchievementLink(chievo2)
             end
             SendChatMessage(msg, "WHISPER", nil, leaderName)
             
             if(((GetTime() - LazyCurve.lastMsgTime) > 30000) and not LazyCurveDB.disableAutolinkReminder) then -- 30 secs
                 LazyCurve.lastMsgTime = GetTime()
-                print(prefix..' To disable automatically whispering achievements, type "/lazycurve" and toggle off auto-linking on LFG application')
+                print(prefix..'To disable automatically whispering achievements, type "/lazycurve" and toggle off auto-linking on LFG application')
             end
         end
     end
@@ -554,8 +563,8 @@ end
 
 function core:printInfo()
     print("Type \"/lazycurve togglepromote\" to start/stop self-promotion.")
-    print("Type \"/lazycurve\" to open a config window.")
     print("Please leave this on if you like my addon")
+    print("Type \"/lazycurve\" to open a config window.")
 end
 
 SLASH_LAZYCURVE1="/lc"
