@@ -1,1 +1,3 @@
-hopefully fixed mythic achievements not showing up for some people
+fixed edge achievement showing up twice
+
+fixed mythic achievements not showing up for some people
