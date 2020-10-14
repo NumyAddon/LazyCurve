@@ -9,7 +9,6 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: true
 
-embeds.xml
-ordered_table.lua
+libs\embeds.xml
 data.lua
 core.lua
