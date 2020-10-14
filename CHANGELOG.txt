@@ -1,2 +1,1 @@
-moved around some code to make it easier to maintain
-fixed issues with Ny'alotha
+toc bump
