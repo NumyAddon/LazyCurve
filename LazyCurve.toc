@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: LazyCurve
 ## Version: @project-version@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
@@ -10,5 +10,4 @@
 ## X-LoadOn-Always: true
 
 libs\embeds.xml
-data.lua
-core.lua
+LazyCurve.lua
