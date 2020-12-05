@@ -1,5 +1,12 @@
 package-as: LazyCurve
 
+move-folders:
+    LazyCurve/modules/PvP: LazyCurve_PvP
+    LazyCurve/modules/MPlus: LazyCurve_MPlus
+    LazyCurve/modules/Legion: LazyCurve_Legion
+    LazyCurve/modules/BFA: LazyCurve_BFA
+    LazyCurve/modules/Shadowlands: LazyCurve_Shadowlands
+
 externals:
     libs/LibStub:
         url: https://repos.wowace.com/wow/ace3/trunk/LibStub

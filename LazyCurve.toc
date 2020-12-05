@@ -10,5 +10,9 @@
 ## X-LoadOn-Always: true
 
 libs\embeds.xml
-data.lua
-core.lua
+LazyCurve.lua
+Config.lua
+
+Utils_Achievement.lua
+Utils_Module.lua
+Utils_SearchEntryMenu.lua
