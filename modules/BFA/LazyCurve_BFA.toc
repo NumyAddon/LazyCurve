@@ -1,7 +1,7 @@
-## Interface: 90001
-## Title: LazyCurve - Battle for Azeroth raids
+## Interface: 90002
+## Title: LazyCurve - Battle for Azeroth
 ## Version: @project-version@
-## Notes: Battle for Azeroth raids module for LazyCurve, disable if you don't want those achievement showing up
+## Notes: Battle for Azeroth module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
 ## X-License: GNU General Public License version 3 (GPLv3)
 

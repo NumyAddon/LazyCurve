@@ -1,251 +1,158 @@
 -- upvalue the globals
 local _G = getfenv(0)
 local LibStub = _G.LibStub
-local gsub = _G.gsub
-local table = _G.table
-local pairs = _G.pairs
-local strfind = _G.strfind
-local strupper = _G.strupper
-local GetAchievementLink = _G.GetAchievementLink
-local GetAchievementInfo = _G.GetAchievementInfo
 local C_LFGList = _G.C_LFGList
-local NPG = _G.NPG
 local ipairs = _G.ipairs
+local pairs = _G.pairs
+local GetTime = _G.GetTime
+local GetAchievementLink = _G.GetAchievementLink
 local LFGListApplicationDialog = _G.LFGListApplicationDialog
+local LE_EXPANSION_LEVEL_CURRENT = _G.LE_EXPANSION_LEVEL_CURRENT
 
-
-local LazyCurveName = ...
-local LazyCurve = LibStub('AceAddon-3.0'):NewAddon(LazyCurveName, 'AceConsole-3.0', 'AceHook-3.0');
+local name = ...
+local LazyCurve = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3.0', 'AceEvent-3.0');
 if not LazyCurve then return end
 
-LazyCurve.TYPE_RAID = 'raid'
-LazyCurve.TYPE_DUNGEON = 'dungeon'
-LazyCurve.TYPE_PVP = 'pvp'
-
-LazyCurve.ACTIVITY_CATEGORY_RAID = 3
-LazyCurve.ACTIVITY_CATEGORY_DUNGEON = 2
-LazyCurve.ACTIVITY_CATEGORY_PVP = {
-	RankedArena = 4,
-	Arena = 7,
-	BG = 8,
-	RankedBG = 9,
-}
-
 LazyCurve.PREFIX = '<LazyCurve>'
+LazyCurve.ACTIVITY_CATEGORY_RAID = 3
+LazyCurve.CURRENT_EXPANSION = LE_EXPANSION_LEVEL_CURRENT
 
-local function tableInsertChildren(target, tableToInsert)
-	for _,child in ipairs(tableToInsert) do
-		table.insert(target, child)
+LazyCurve.utils = {}
+LazyCurve.lastMsgTime = 0
+
+function LazyCurve:IsActivityActive(activityTable)
+	local searchGroupId = activityTable.groupId
+	for _, groupId in ipairs(C_LFGList.GetAvailableActivityGroups(self.ACTIVITY_CATEGORY_RAID)) do
+		if groupId == searchGroupId then
+			return true
+		end
 	end
-	return target
+
+	return false
 end
 
 function LazyCurve:OnSignUp(SignUpButton)
+	if(self.DB.whisperOnApply ~= true) then
+		return
+	end
+	local dialog = SignUpButton:GetParent()
+	local resultID = dialog.resultID
+	local resultInfo = C_LFGList.GetSearchResultInfo(resultID)
+
+
+	if(resultInfo) then
+		local leaderName = resultInfo.leaderName
+		local _, _, _, groupId, _ = C_LFGList.GetActivityInfo(resultInfo.activityID)
+		local infoTable = LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, true)
+
+		if(infoTable) then
+			local achievementList = {}
+
+			for _, activityTable in ipairs(infoTable) do
+				local earnedAchievements = LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
+				if #earnedAchievements > 0 then
+					for _, achievementId in ipairs(earnedAchievements) do
+						achievementList[achievementId] = achievementId
+					end
+				end
+			end
+
+			local msg = '';
+			if(self.DB.advertise) then
+				msg = self.PREFIX .. msg;
+			end
+			for _, achievementId in pairs(achievementList) do
+					msg = msg .. ' ' .. GetAchievementLink(achievementId)
+			end
+			self.hooks.SendChatMessage(msg, 'WHISPER', nil, leaderName)
+
+			if (GetTime() - LazyCurve.lastMsgTime) > 30000 and not self.DB.disableAutolinkReminder then -- 30 secs
+				LazyCurve.lastMsgTime = GetTime()
+				self:Print('To disable automatically whispering achievements, type \'/lazycurve\' and toggle off auto-linking on LFG application')
+			end
+		end
+	end
 end
 
 function LazyCurve:LFGListUtil_GetSearchEntryMenu(resultID)
-
-	local tempResultTable = C_LFGList.GetSearchResultInfo(resultID);
-	local _, _, categoryId, groupId, _ = C_LFGList.GetActivityInfo(tempResultTable.activityID)
-	local leaderName = tempResultTable.leaderName
-
-	local popupMenu = self.hooks.LFGListUtil_GetSearchEntryMenu(resultID)
-
-	local found = false
-	local menuIndex
-	for i, item in pairs(popupMenu) do
-		if(strfind(item.text, self.PREFIX)) then
-			menuIndex = i
-			found = true
-			break
-		end
-	end
-
-	local lazyCurveMenu = self:getExtraMenuList(categoryId, groupId, leaderName)
-
-	if(not found) then
-		table.insert(popupMenu, 4, lazyCurveMenu)
-	else
-		popupMenu[menuIndex] = lazyCurveMenu
-	end
-
-	return popupMenu
+	return self.utils.searchEntryMenu:GetSearchEntryMenu(resultID)
 end
 
-function LazyCurve:SendAchievement(name, achievementId)
-	self:Print('requested to send chievo ' .. achievementId .. ' to ' .. name)
-end
+function LazyCurve:processMsg(message)
+	local original = message
 
-function LazyCurve:GetActivityTypeByCategoryId(categoryId)
-	if categoryId == self.ACTIVITY_CATEGORY_DUNGEON then
-		return self.TYPE_DUNGEON
-	elseif categoryId == self.ACTIVITY_CATEGORY_RAID then
-		return self.TYPE_RAID
-	else
-		for _, pvpCategoryId in ipairs(self.ACTIVITY_CATEGORY_PVP) do
-			if categoryId == pvpCategoryId then
-				return self.TYPE_PVP
-			end
-		end
-	end
-	return nil
-end
-
-
-function LazyCurve:IsAchievementEarned(achievementId)
-	_, _, _, completed, _ = GetAchievementInfo(achievementId);
-	return completed or false
-end
-
-function LazyCurve:GetHighestEarnedAchievement(activityTable)
-	local ret = {}
-	if activityTable.type == self.TYPE_RAID then
-		local earnedMythic
-
-		if self:IsAchievementEarned(activityTable.achievements.edge) then
-			return {activityTable.achievements.edge}
-		end
-
-		if self:IsAchievementEarned(activityTable.achievements.curve) then
-			table.insert(ret, activityTable.achievements.curve)
-		end
-
-		for _, achievementId in ipairs(activityTable.achievements.mythic) do
-			if self:IsAchievementEarned(achievementId) then
-				earnedMythic = achievementId
-			end
-		end
-		if earnedMythic then
-			table.insert(ret, earnedMythic)
-		end
-
-		if #ret == 0 then
-			if self:IsAchievementEarned(activityTable.achievements.normal) then
-				ret = {activityTable.achievements.normal}
-			end
-		end
+	for keyword, achievementId in pairs(self.utils.achievement:GetAchievementKeywordMap()) do
+		message = self.utils.achievement.ReplaceKeywordWithAchievementLink(self, message, keyword, achievementId)
 	end
 
-	return ret
+	if(original ~= message and self.DB.advertise) then
+		message = self.PREFIX .. message
+	end
+	return message
 end
 
-function LazyCurve:FormatAchievementMenuItem(achievementId, leaderName)
-	local _, achievementName, _ = GetAchievementInfo(achievementId)
-
-	return {
-		text = achievementName,
-		func = function(_, name, id) self:SendAchievement(name, id) end,
-		notCheckable = true,
-		arg1 = leaderName,
-		arg2 = achievementId,
-		disabled = not leaderName,
-	}
+function LazyCurve:BNSendWhisper(id, msg)
+	self.hooks.BNSendWhisper(id, self:processMsg(msg))
 end
 
-function LazyCurve:GetAchievementMenu(infoTable, leaderName)
-	local mainMenuItems = {}
-
-	for _, activityTable in ipairs(infoTable) do
-		local earnedAchievements = self:GetHighestEarnedAchievement(activityTable)
-		if #earnedAchievements > 0 then
-			if activityTable.isLatest then
-				for _, achievementId in ipairs(earnedAchievements) do
-					table.insert(mainMenuItems, 1, self:FormatAchievementMenuItem(achievementId, leaderName))
-				end
-			else
-				local subMenuItems = {}
-				for _, achievementId in ipairs(earnedAchievements) do
-					table.insert(subMenuItems, self:FormatAchievementMenuItem(achievementId, leaderName))
-				end
-				local subMenu = {
-					text = activityTable.longName,
-					hasArrow = true,
-					notCheckable = true,
-					disabled = not leaderName,
-					menuList = subMenuItems,
-				}
-				table.insert(mainMenuItems, subMenu)
-			end
-		end
-	end
-
-	if #mainMenuItems == 0 then
-		return false
-	end
-
-	local mainMenu =  {
-		text = self.PREFIX .. " Link Achievement to Leader",
-		hasArrow = true,
-		notCheckable = true,
-		disabled = not leaderName,
-		menuList = mainMenuItems,
-	}
-	return mainMenu
+function LazyCurve:SendChatMessage(msg, chatType, language, channel)
+	self.hooks.SendChatMessage(self:processMsg(msg), chatType, language, channel);
 end
 
-function LazyCurve:GetInfoTableByActivityGroup(categoryId, groupId)
-	local activityType = self:GetActivityTypeByCategoryId(categoryId)
-	local resultTable = {}
-	local allInfo = {}
-	local minimumResults = 1
-
-	for _, module in self:IterateModules() do
-		local modType = module.TYPE
-		local moduleInfoTable = module:GetInfoTable()
-		local infoTable
-
-		allInfo = tableInsertChildren(allInfo, moduleInfoTable)
-
-		if activityType == nil and moduleInfoTable then
-			tableInsertChildren(resultTable, moduleInfoTable)
-		elseif activityType == modType then
-			infoTable = module:GetInfoTableByActivityGroup(groupId)
-			if infoTable then
-				table.insert(resultTable, infoTable)
-			end
-		end
-
-		if module:HasLatestRaid() then
-			minimumResults = minimumResults + 1
-			table.insert(resultTable, 1, module:GetLatestRaid())
-		end
+function LazyCurve:SendAchievement(leaderName, achievementId)
+	local message = GetAchievementLink(achievementId)
+	if(self.DB.advertise) then
+		message = self.PREFIX .. message
 	end
-	return #resultTable >= minimumResults and resultTable or allInfo
+	self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
 end
 
-function LazyCurve:getExtraMenuList(activityId, groupId, leaderName)
-	local infoTable = self:GetInfoTableByActivityGroup(activityId, groupId)
-	local menu = self:GetAchievementMenu(infoTable, leaderName)
-
-	NPG.browser(infoTable)
-
-	if not menu then
-		--no achievements
-		return {
-			text = self.PREFIX .. " You haven't completed any relevant achievements yet :(",
-			notCheckable = true,
-			disabled = true,
-		}
-	end
-	return menu
+function LazyCurve:ACHIEVEMENT_EARNED()
+	self.utils.achievement:BuildAchievementKeywordMap()
 end
 
 function LazyCurve:OnInitialize()
-	for moduleName, module in self:IterateModules() do
-		local modType = module.TYPE
-		if(modType == self.TYPE_PVP) then
+	self.DB = LazyCurveDB
+	self:InitDefaults()
 
-		elseif(modType == self.TYPE_DUNGEON) then
+	self.Config:Initialize()
 
-		elseif(modType == self.TYPE_RAID) then
+	self:RawHook('SendChatMessage', true)
+	self:RawHook('BNSendWhisper', true)
+	self:RawHook('LFGListUtil_GetSearchEntryMenu', true)
+	LFGListApplicationDialog.SignUpButton:HookScript('OnClick', function(button) self:OnSignUp(button) end)
 
-		else
-			self:DisableModule(moduleName)
-			error('LazyCurve does not support modules of type ' .. modType, 2)
+	self:RegisterChatCommand('lc', self.Config.OpenConfig)
+	self:RegisterChatCommand('lazycurve', self.Config.OpenConfig)
+
+	self:RegisterEvent('ACHIEVEMENT_EARNED');
+
+	C_Timer.After(15, function()
+		--for some reason, some achievements don't properly load the first time you log in; so maybe delaying it helps
+		self.utils.achievement:BuildAchievementKeywordMap()
+	end)
+end
+
+function LazyCurve:InitDefaults()
+	local defaults = {
+		advertise = true,
+
+		whisperOnApply = true,
+		disableAutolinkReminder = false,
+		mythicThreshold = 2,
+	}
+	local configChanged = false
+
+	for property, value in pairs(defaults) do
+		if self.DB[property] == nil then
+			self.DB[property] = value
+			configChanged = true
 		end
 	end
 
-	self:RawHook("LFGListUtil_GetSearchEntryMenu", true)
-	LFGListApplicationDialog.CancelButton:HookScript('OnClick', self.OnSignUp)
-end
+	if configChanged then
+		C_Timer.After(4, function() self.Config:OpenConfig() end)
+	end
+	self:Print('loaded version', self.Config.version)
 
+end

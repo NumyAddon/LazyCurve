@@ -1,7 +1,7 @@
-## Interface: 90001
-## Title: LazyCurve - Shadowlands raids
+## Interface: 90002
+## Title: LazyCurve - Shadowlands
 ## Version: @project-version@
-## Notes: Shadowlands raids module for LazyCurve, disable if you don't want those achievement showing up
+## Notes: Shadowlands module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
 ## X-License: GNU General Public License version 3 (GPLv3)
 

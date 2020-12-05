@@ -1,7 +1,7 @@
-## Interface: 90001
-## Title: LazyCurve - Legion raids
+## Interface: 90002
+## Title: LazyCurve - Legion
 ## Version: @project-version@
-## Notes: Legion raids module for LazyCurve, disable if you don't want those achievement showing up
+## Notes: Legion module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
 ## X-License: GNU General Public License version 3 (GPLv3)
 

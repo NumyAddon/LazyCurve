@@ -1,47 +1,12 @@
 -- upvalue the globals
 local _G = getfenv(0)
 local LibStub = _G.LibStub
-local C_LFGList = _G.C_LFGList
-local GetBuildInfo = _G.GetBuildInfo
-local ipairs = _G.ipairs
-local setmetatable = _G.setmetatable
+local LE_EXPANSION_LEGION = _G.LE_EXPANSION_LEGION
 
 local modName = 'Legion'
-LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve');
+LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 LazyCurveLegion = LazyCurve:NewModule(modName)
-LazyCurveLegion.TYPE = LazyCurve.TYPE_RAID
-
-function LazyCurveLegion:HasLatestRaid()
-    local _, _, _, gameVersion = GetBuildInfo();
-    return gameVersion >= 70000 and gameVersion < 80000
-end
-
-function LazyCurveLegion:GetLatestRaid()
-    if not self:HasLatestRaid() then return nil end
-
-    return self:GetInfoTable()[1]
-end
-
-function LazyCurveLegion:GetInfoTableByActivityGroup(groupId)
-    -- pvp or m+ would just return all if the category matches
-    for _, activityTable in ipairs(self:GetInfoTable()) do
-        if activityTable.groupId == groupId then
-            return activityTable
-        end
-    end
-    return false
-end
-
-function LazyCurveLegion:IsActivityActive(activityTable)
-    local searchGroupId = activityTable.groupId
-    for _, groupId in ipairs(C_LFGList.GetAvailableActivityGroups(LazyCurve.ACTIVITY_CATEGORY_RAID)) do
-        if groupId == searchGroupId then
-            return true
-        end
-    end
-
-    return false
-end
+LazyCurveLegion.EXPANSION = LE_EXPANSION_LEGION
 
 function LazyCurveLegion:GetInfoTable()
     local infoTable = {
@@ -146,28 +111,5 @@ function LazyCurveLegion:GetInfoTable()
             },
         },
     }
-    local metatable = {
-        __index = function(activityTable, key)
-            if key == 'longName' then
-                local name,_ = C_LFGList.GetActivityGroupInfo(activityTable.groupId)
-                return name
-            elseif key == 'isActive' then
-                return self:IsActivityActive(activityTable)
-            elseif key == 'type' then
-                return self.TYPE
-            elseif key == 'module' then
-                return self
-            elseif key == 'isLatest' then
-                return self:HasLatestRaid()
-                        and self:GetLatestRaid().shortName == activityTable.shortName
-            end
-        end
-    }
-    for _, activityTable in ipairs(infoTable) do
-        setmetatable(activityTable, metatable)
-    end
     return infoTable
 end
-
-
-
