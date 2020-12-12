@@ -58,11 +58,13 @@ function LazyCurve:OnSignUp(SignUpButton)
 			end
 
 			local msg = '';
+			for _, achievementId in pairs(achievementList) do
+				msg = msg .. ' ' .. GetAchievementLink(achievementId)
+			end
+			if msg == '' then return end
+
 			if(self.DB.advertise) then
 				msg = self.PREFIX .. msg;
-			end
-			for _, achievementId in pairs(achievementList) do
-					msg = msg .. ' ' .. GetAchievementLink(achievementId)
 			end
 			self.hooks.SendChatMessage(msg, 'WHISPER', nil, leaderName)
 
