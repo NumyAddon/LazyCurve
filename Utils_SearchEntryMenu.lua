@@ -126,7 +126,7 @@ function LazyCurve.utils.searchEntryMenu:getExtraMenuList(groupId, leaderName)
     return menu
 end
 
-function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, maximizeResults)
+function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, groupResultsOnly)
     local resultTable = {}
     local allInfo = {}
     local minimumResults = 1
@@ -141,10 +141,10 @@ function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, ma
             table.insert(resultTable, infoTable)
         end
 
-        if (not infoTable or not infoTable.isLatest) and LazyCurve.utils.module:ModuleHasLatestRaid(module) then
+        if (not groupResultsOnly and (not infoTable or not infoTable.isLatest)) and LazyCurve.utils.module:ModuleHasLatestRaid(module) then
             minimumResults = minimumResults + 1
             table.insert(resultTable, LazyCurve.utils.module:GetLatestModuleRaid(module))
         end
     end
-    return (maximizeResults or #resultTable >= minimumResults) and resultTable or allInfo
+    return (groupResultsOnly or #resultTable >= minimumResults) and resultTable or allInfo
 end
