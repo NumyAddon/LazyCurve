@@ -5,8 +5,8 @@ local UnitFactionGroup = _G.UnitFactionGroup
 local LE_EXPANSION_BATTLE_FOR_AZEROTH = _G.LE_EXPANSION_BATTLE_FOR_AZEROTH
 
 local modName = 'BattleForAzeroth'
-LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-LazyCurveBFA = LazyCurve:NewModule(modName)
+local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
+local LazyCurveBFA = LazyCurve:NewModule(modName)
 LazyCurveBFA.EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH
 
 function LazyCurveBFA:GetInfoTable()

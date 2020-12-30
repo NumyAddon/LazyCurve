@@ -4,8 +4,8 @@ local LibStub = _G.LibStub
 local LE_EXPANSION_SHADOWLANDS = _G.LE_EXPANSION_SHADOWLANDS
 
 local modName = 'Shadowlands'
-LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-LazyCurveShadowlands = LazyCurve:NewModule(modName)
+local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
+local LazyCurveShadowlands = LazyCurve:NewModule(modName)
 LazyCurveShadowlands.EXPANSION = LE_EXPANSION_SHADOWLANDS
 
 function LazyCurveShadowlands:GetInfoTable()
