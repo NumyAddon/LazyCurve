@@ -18,11 +18,14 @@ LazyCurve.utils.achievement = LazyCurve.utils.achievement or {}
 LazyCurve.utils.achievement.achievementKeywordMap = {}
 
 function LazyCurve.utils.achievement:IsAchievementEarned(achievementId)
-    _, _, _, completed, _ = GetAchievementInfo(achievementId);
+    if LazyCurve.DB.enableSimulation and LazyCurve.DB.simulatedAchievements[achievementId] then
+        return true
+    end
+    local _, _, _, completed, _ = GetAchievementInfo(achievementId);
     return completed or false
 end
 
-function LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
+function LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable, applyMythicThreshold)
     local ret = {}
 
     if self:IsAchievementEarned(activityTable.achievements.edge) then
@@ -33,7 +36,7 @@ function LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
         table.insert(ret, activityTable.achievements.curve)
     end
 
-    local earnedMythic = self:GetHighestEarnedMythicAchievement(activityTable)
+    local earnedMythic = self:GetHighestEarnedMythicAchievement(activityTable, applyMythicThreshold)
     if earnedMythic then
         table.insert(ret, earnedMythic)
     end
@@ -47,10 +50,15 @@ function LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
     return ret
 end
 
-function LazyCurve.utils.achievement:GetHighestEarnedMythicAchievement(activityTable)
+function LazyCurve.utils.achievement:GetHighestEarnedMythicAchievement(activityTable, applyMythicThreshold)
     local earnedMythic
-    for _, achievementId in ipairs(activityTable.achievements.mythic) do
-        if self:IsAchievementEarned(achievementId) then
+    local threshold = -1
+    if applyMythicThreshold then
+        threshold = LazyCurve.DB.mythicThreshold
+        if threshold == 0 then threshold = 999 end
+    end
+    for i, achievementId in ipairs(activityTable.achievements.mythic) do
+        if i >= threshold and  self:IsAchievementEarned(achievementId) then
             earnedMythic = achievementId
         end
     end
@@ -66,16 +74,16 @@ function LazyCurve.utils.achievement:BuildAchievementKeywordMap()
                 map.edge = activityTable.achievements.edge
             end
 
-            local names = {
+            local activityNames = {
                 activityTable.shortName,
                 activityTable.alternativeKeyword,
             }
 
-            for _, name in ipairs(names) do
-                map[name .. 'normal'] = activityTable.achievements.normal
-                map[name .. 'curve'] = activityTable.achievements.curve
-                map[name .. 'edge'] = activityTable.achievements.edge
-                map[name .. 'mythic'] = self:GetHighestEarnedMythicAchievement(activityTable) or activityTable.achievements.edge
+            for _, activityName in ipairs(activityNames) do
+                map[activityName .. 'normal'] = activityTable.achievements.normal
+                map[activityName .. 'curve'] = activityTable.achievements.curve
+                map[activityName .. 'edge'] = activityTable.achievements.edge
+                map[activityName .. 'mythic'] = self:GetHighestEarnedMythicAchievement(activityTable) or activityTable.achievements.edge
             end
         end
     end

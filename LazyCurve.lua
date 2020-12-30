@@ -34,6 +34,12 @@ function LazyCurve:IsActivityActive(activityTable)
 	return false
 end
 
+function LazyCurve:OnCancel(CancelButton)
+	if(self.DB.enableSimulation) then
+		LazyCurve:OnSignUp(CancelButton)
+	end
+end
+
 function LazyCurve:OnSignUp(SignUpButton)
 	if(self.DB.whisperOnApply ~= true) then
 		return
@@ -52,7 +58,7 @@ function LazyCurve:OnSignUp(SignUpButton)
 			local achievementList = {}
 
 			for _, activityTable in ipairs(infoTable) do
-				local earnedAchievements = LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
+				local earnedAchievements = LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable, true)
 				if #earnedAchievements > 0 then
 					for _, achievementId in ipairs(earnedAchievements) do
 						achievementList[achievementId] = achievementId
@@ -60,16 +66,21 @@ function LazyCurve:OnSignUp(SignUpButton)
 				end
 			end
 
-			local msg = '';
+			local message = '';
 			for _, achievementId in pairs(achievementList) do
-				msg = msg .. ' ' .. GetAchievementLink(achievementId)
+				message = message .. ' ' .. GetAchievementLink(achievementId)
 			end
-			if msg == '' then return end
+			if message == '' then return end
 
 			if(self.DB.advertise) then
-				msg = self.PREFIX .. msg;
+				message = self.PREFIX .. message;
 			end
-			self.hooks.SendChatMessage(msg, 'WHISPER', nil, leaderName)
+
+			if(self.DB.enableSimulation) then
+				self:SimulationPrint('Intent to whisper "', leaderName, '" with message:', message)
+				return
+			end
+			self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
 
 			if (GetTime() - LazyCurve.lastMsgTime) > 30000 and not self.DB.disableAutolinkReminder then -- 30 secs
 				LazyCurve.lastMsgTime = GetTime()
@@ -83,7 +94,13 @@ function LazyCurve:LFGListUtil_GetSearchEntryMenu(resultID)
 	return self.utils.searchEntryMenu:GetSearchEntryMenu(resultID)
 end
 
-function LazyCurve:processMsg(message)
+function LazyCurve:SimulationPrint(...)
+	if(self.DB.enableSimulation) then
+		self:Print('[sim active]', ...)
+	end
+end
+
+function LazyCurve:ProcessMsg(message)
 	local original = message
 
 	for keyword, achievementId in pairs(self.utils.achievement:GetAchievementKeywordMap()) do
@@ -93,21 +110,31 @@ function LazyCurve:processMsg(message)
 	if(original ~= message and self.DB.advertise) then
 		message = self.PREFIX .. message
 	end
+
+	if(original ~= message and self.DB.enableSimulation) then
+		self:SimulationPrint('Intent to replace message with:', message)
+		return original
+	end
+
 	return message
 end
 
 function LazyCurve:BNSendWhisper(id, msg)
-	self.hooks.BNSendWhisper(id, self:processMsg(msg))
+	self.hooks.BNSendWhisper(id, self:ProcessMsg(msg))
 end
 
 function LazyCurve:SendChatMessage(msg, chatType, language, channel)
-	self.hooks.SendChatMessage(self:processMsg(msg), chatType, language, channel);
+	self.hooks.SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
 end
 
 function LazyCurve:SendAchievement(leaderName, achievementId)
 	local message = GetAchievementLink(achievementId)
 	if(self.DB.advertise) then
 		message = self.PREFIX .. message
+	end
+	if(self.DB.enableSimulation) then
+		self:SimulationPrint('Intent to whisper "', leaderName, '" with message:', message)
+		return
 	end
 	self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
 end
@@ -126,6 +153,7 @@ function LazyCurve:OnInitialize()
 	self:RawHook('BNSendWhisper', true)
 	self:RawHook('LFGListUtil_GetSearchEntryMenu', true)
 	LFGListApplicationDialog.SignUpButton:HookScript('OnClick', function(button) self:OnSignUp(button) end)
+	LFGListApplicationDialog.CancelButton:HookScript('OnClick', function(button) self:OnCancel(button) end)
 
 	self:RegisterChatCommand('lc', self.Config.OpenConfig)
 	self:RegisterChatCommand('lazycurve', self.Config.OpenConfig)
@@ -145,6 +173,10 @@ function LazyCurve:InitDefaults()
 		whisperOnApply = true,
 		disableAutolinkReminder = false,
 		mythicThreshold = 2,
+
+		devMode = false,
+		enableSimulation = false,
+		simulatedAchievements = {},
 	}
 	local configChanged = false
 
@@ -158,6 +190,4 @@ function LazyCurve:InitDefaults()
 	if configChanged then
 		C_Timer.After(4, function() self.Config:OpenConfig() end)
 	end
-	self:Print('loaded version', self.Config.version)
-
 end
