@@ -6,6 +6,7 @@ local ipairs = _G.ipairs
 local pairs = _G.pairs
 local GetTime = _G.GetTime
 local GetAchievementLink = _G.GetAchievementLink
+local C_Timer = _G.C_Timer
 local LFGListApplicationDialog = _G.LFGListApplicationDialog
 local LE_EXPANSION_LEVEL_CURRENT = _G.LE_EXPANSION_LEVEL_CURRENT
 
@@ -139,10 +140,6 @@ function LazyCurve:SendAchievement(leaderName, achievementId)
 	self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
 end
 
-function LazyCurve:ACHIEVEMENT_EARNED()
-	self.utils.achievement:BuildAchievementKeywordMap()
-end
-
 function LazyCurve:OnInitialize()
 	self.DB = LazyCurveDB
 	self:InitDefaults()
@@ -158,7 +155,7 @@ function LazyCurve:OnInitialize()
 	self:RegisterChatCommand('lc', self.Config.OpenConfig)
 	self:RegisterChatCommand('lazycurve', self.Config.OpenConfig)
 
-	self:RegisterEvent('ACHIEVEMENT_EARNED');
+	self:RegisterEvent('ACHIEVEMENT_EARNED', function() self.utils.achievement:BuildAchievementKeywordMap() end);
 
 	C_Timer.After(15, function()
 		--for some reason, some achievements don't properly load the first time you log in; so maybe delaying it helps
