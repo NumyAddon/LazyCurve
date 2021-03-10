@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: LazyCurve - Legion
 ## Version: @project-version@
 ## Notes: Legion module for LazyCurve, disable if you don't want those achievement showing up

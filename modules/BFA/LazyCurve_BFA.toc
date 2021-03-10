@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: LazyCurve - Battle for Azeroth
 ## Version: @project-version@
 ## Notes: Battle for Azeroth module for LazyCurve, disable if you don't want those achievement showing up

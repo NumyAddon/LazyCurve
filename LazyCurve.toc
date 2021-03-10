@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: LazyCurve
 ## Version: @project-version@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
