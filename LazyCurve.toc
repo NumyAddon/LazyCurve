@@ -1,10 +1,12 @@
-## Interface: 90005
+## Interface: @toc-version-retail@
 ## Title: LazyCurve
 ## Version: @project-version@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
 ## Author: Numy
 ## X-License: GNU General Public License version 3 (GPLv3)
 ## SavedVariables:LazyCurveDB
+## X-Curse-Project-ID: 290074
+## X-Wago-ID: XrNk086a
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: true
