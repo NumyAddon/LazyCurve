@@ -6,7 +6,5 @@
 ## X-License: GNU General Public License version 3 (GPLv3)
 
 ## RequiredDeps: LazyCurve
-## LoadManagers: AddonLoader
-## X-LoadOn-Always: true
 
 shadowlands.lua
