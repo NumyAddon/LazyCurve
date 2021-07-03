@@ -9,9 +9,31 @@ local LazyCurveShadowlands = LazyCurve:NewModule(modName)
 LazyCurveShadowlands.EXPANSION = LE_EXPANSION_SHADOWLANDS
 
 function LazyCurveShadowlands:GetInfoTable()
-    -- source: wowhead.com and https://wow.tools/dbc/?dbc=groupfinderactivity&build=9.0.2.36665#page=1&colFilter[2]=heroic&colFilter[3]=3
+    -- source: wowhead.com and https://wow.tools/dbc/?dbc=groupfinderactivity#page=1&colFilter[2]=heroic&colFilter[3]=3
 
     local infoTable = {
+        {
+            shortName = "SOD",
+            alternativeKeyword = "sylvanas",
+            groupId = 271,
+            achievements = {
+                normal = 15126,
+                curve = 15134,
+                edge = 15135,
+                mythic = {
+                    15112, --the-tarragrue
+                    15113, --the-eye-of-the-jailor
+                    15114, --the-nine
+                    15115, --remnant-of-ner'zhul
+                    15116, --soulrender-dormazain
+                    15117, --painsmith-raznal
+                    15118, --guardian-of-the-first-ones
+                    15119, --fatescribe-roh-kalo
+                    15120, --kel'thuzad
+                    15121, --sylvanas-windrunner
+                },
+            }
+        },
         {
             shortName = "CN",
             alternativeKeyword = "denathrius",
