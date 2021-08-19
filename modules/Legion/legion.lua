@@ -7,6 +7,7 @@ local modName = 'Legion'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 local LazyCurveLegion = LazyCurve:NewModule(modName)
 LazyCurveLegion.EXPANSION = LE_EXPANSION_LEGION
+LazyCurveLegion.type = LazyCurve.MODULE_TYPE_RAID
 
 function LazyCurveLegion:GetInfoTable()
     local infoTable = {

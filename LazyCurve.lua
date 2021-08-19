@@ -18,22 +18,13 @@ local LazyCurve = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceH
 if not LazyCurve then return end
 
 LazyCurve.PREFIX = '<LazyCurve>'
-LazyCurve.ACTIVITY_CATEGORY_RAID = 3
 LazyCurve.CURRENT_EXPANSION = LE_EXPANSION_LEVEL_CURRENT
+LazyCurve.MODULE_TYPE_RAID = 'raid'
+LazyCurve.MODULE_TYPE_OTHER = 'other'
 
 LazyCurve.utils = {}
 LazyCurve.lastMsgTime = 0
 
-function LazyCurve:IsActivityActive(activityTable)
-	local searchGroupId = activityTable.groupId
-	for _, groupId in ipairs(C_LFGList.GetAvailableActivityGroups(self.ACTIVITY_CATEGORY_RAID)) do
-		if groupId == searchGroupId then
-			return true
-		end
-	end
-
-	return false
-end
 
 function LazyCurve:OnCancel(CancelButton)
 	if(self.DB.enableSimulation) then
@@ -71,7 +62,10 @@ function LazyCurve:OnSignUp(SignUpButton)
 			for _, achievementId in pairs(achievementList) do
 				message = message .. ' ' .. GetAchievementLink(achievementId)
 			end
-			if message == '' then return end
+			if message == '' then
+				if(self.DB.enableSimulation) then self:SimulationPrint('no achievements found to whisper') end
+				return
+			end
 
 			if(self.DB.advertise) then
 				message = self.PREFIX .. message;

@@ -19,7 +19,7 @@ function LazyCurve.utils.module:GetLatestModuleRaid(module)
 end
 
 function LazyCurve.utils.module:ModuleHasLatestRaid(module)
-	return LazyCurve.CURRENT_EXPANSION == module.EXPANSION
+	return LazyCurve.CURRENT_EXPANSION == module.EXPANSION and module.type == LazyCurve.MODULE_TYPE_RAID
 end
 
 function LazyCurve.utils.module:GetModuleInfoTableByActivityGroup(module, groupId)
@@ -35,13 +35,11 @@ function LazyCurve.utils.module:GetModuleInfoTable(module)
 	local moduleName = module.moduleName
 	if not self.moduleInfoTables[moduleName] then
 		local infoTable = module:GetInfoTable()
-		for i, activityTable in ipairs(infoTable) do
-			local name, _ = C_LFGList.GetActivityGroupInfo(activityTable.groupId)
-			activityTable.longName = name
-			activityTable.isActive = LazyCurve:IsActivityActive(activityTable)
+		for _, activityTable in ipairs(infoTable) do
+			local localName, _ = C_LFGList.GetActivityGroupInfo(activityTable.groupId)
+			activityTable.longName = localName or activityTable.shortName
 			activityTable.module = module
-			activityTable.isLatest = self:ModuleHasLatestRaid(module) and
-					infoTable[i].shortName == activityTable.shortName
+			activityTable.isLatest = self:ModuleHasLatestRaid(module) and infoTable[1].shortName == activityTable.shortName
 		end
 		self.moduleInfoTables[moduleName] = infoTable
 	end

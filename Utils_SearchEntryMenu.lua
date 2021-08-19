@@ -70,7 +70,7 @@ function LazyCurve.utils.searchEntryMenu:GetAchievementMenu(infoTable, leaderNam
     for _, activityTable in ipairs(infoTable) do
         local earnedAchievements = LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
         if #earnedAchievements > 0 then
-            if activityTable.isLatest then
+            if activityTable.isLatest or (activityTable.hideRaids and #infoTable == 1) then
                 for _, achievementId in ipairs(earnedAchievements) do
                     table.insert(mainMenuItems, 1, self:FormatAchievementMenuItem(achievementId, leaderName))
                 end
@@ -129,6 +129,7 @@ end
 function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, groupResultsOnly)
     local resultTable = {}
     local allInfo = {}
+    local nonRaids = {}
     local minimumResults = 1
 
     for _, module in LazyCurve:IterateModules() do
@@ -138,6 +139,9 @@ function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, gr
 
         local infoTable = LazyCurve.utils.module:GetModuleInfoTableByActivityGroup(module, groupId)
         if infoTable then
+            if(infoTable.hideRaids) then
+                table.insert(nonRaids, infoTable)
+            end
             table.insert(resultTable, infoTable)
         end
 
@@ -146,5 +150,5 @@ function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, gr
             table.insert(resultTable, LazyCurve.utils.module:GetLatestModuleRaid(module))
         end
     end
-    return (groupResultsOnly or #resultTable >= minimumResults) and resultTable or allInfo
+    return #nonRaids > 0 and nonRaids or ((groupResultsOnly or #resultTable >= minimumResults) and resultTable or allInfo)
 end

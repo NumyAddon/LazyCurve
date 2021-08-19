@@ -7,6 +7,7 @@ local modName = 'Shadowlands'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 local LazyCurveShadowlands = LazyCurve:NewModule(modName)
 LazyCurveShadowlands.EXPANSION = LE_EXPANSION_SHADOWLANDS
+LazyCurveShadowlands.type = LazyCurve.MODULE_TYPE_RAID
 
 function LazyCurveShadowlands:GetInfoTable()
     -- source: wowhead.com and https://wow.tools/dbc/?dbc=groupfinderactivity#page=1&colFilter[2]=heroic&colFilter[3]=3
@@ -59,6 +60,3 @@ function LazyCurveShadowlands:GetInfoTable()
     }
     return infoTable
 end
-
-
-
