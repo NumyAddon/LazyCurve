@@ -56,6 +56,20 @@ function LazyCurveShadowlands:GetInfoTable()
                 },
             },
         },
+        {
+            shortName = "TAZ",
+            alternativeKeyword = "taza",
+            groupId = 272,
+            achievements = {
+                normal = 15177,
+                curve = 15178,
+                edge = 15178,
+                mythic = {
+                    15177, --normal-mode
+                    15178, --hard-mode
+                },
+            },
+        },
     }
     return infoTable
 end
