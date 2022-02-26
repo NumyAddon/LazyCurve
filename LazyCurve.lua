@@ -98,8 +98,21 @@ end
 function LazyCurve:ProcessMsg(message)
 	local original = message
 
+	local curve, edge;
 	for keyword, achievementId in pairs(self.utils.achievement:GetAchievementKeywordMap()) do
-		message = self.utils.achievement.ReplaceKeywordWithAchievementLink(self, message, keyword, achievementId)
+		if keyword == 'curve' then
+			curve = achievementId;
+		elseif keyword == 'edge' then
+			edge = achievementId;
+		else
+			message = self.utils.achievement.ReplaceKeywordWithAchievementLink(self, message, keyword, achievementId)
+		end
+	end
+	if curve then
+		message = self.utils.achievement.ReplaceKeywordWithAchievementLink(self, message, 'curve', curve);
+	end
+	if edge then
+		message = self.utils.achievement.ReplaceKeywordWithAchievementLink(self, message, 'edge', edge);
 	end
 
 	if(original ~= message and self.DB.advertise) then

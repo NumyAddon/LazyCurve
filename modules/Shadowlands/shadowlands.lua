@@ -14,6 +14,29 @@ function LazyCurveShadowlands:GetInfoTable()
 
     local infoTable = {
         {
+            shortName = "SFO",
+            alternativeKeyword = "jailer",
+            groupId = 282,
+            achievements = {
+                normal = 15417,
+                curve = 15470,
+                edge = 15471,
+                mythic = {
+                    15479, --vigilant-guardian
+                    15480, --skolex
+                    15481, --artificer-xymox
+                    15482, --dausegne
+                    15483, --prototype-pantheon
+                    15484, --lihuvim
+                    15485, --halondrus
+                    15486, --anduin-wrynn
+                    15487, --lords-of-dread
+                    15488, --rygelon
+                    15489, --the-jailer
+                },
+            },
+        },
+        {
             shortName = "SOD",
             alternativeKeyword = "sylvanas",
             groupId = 271,
@@ -33,7 +56,7 @@ function LazyCurveShadowlands:GetInfoTable()
                     15120, --kel'thuzad
                     15121, --sylvanas-windrunner
                 },
-            }
+            },
         },
         {
             shortName = "CN",
