@@ -10,8 +10,6 @@ LazyCurveTazavesh.EXPANSION = LE_EXPANSION_SHADOWLANDS
 LazyCurveTazavesh.type = LazyCurve.MODULE_TYPE_OTHER
 
 function LazyCurveTazavesh:GetInfoTable()
-    -- source: https://wow.tools/dbc/?dbc=groupfinderactivity#page=1&search=tazavesh
-
     local infoTable = {
         {
             hideRaids = true,

@@ -25,7 +25,7 @@ end
 function LazyCurve.utils.searchEntryMenu:GetSearchEntryMenu(resultID)
 
     local tempResultTable = C_LFGList.GetSearchResultInfo(resultID);
-    local _, _, _, groupId, _ = C_LFGList.GetActivityInfo(tempResultTable.activityID)
+    local activityInfo = C_LFGList.GetActivityInfoTable(tempResultTable.activityID)
     local leaderName = tempResultTable.leaderName
 
     local popupMenu = LazyCurve.hooks.LFGListUtil_GetSearchEntryMenu(resultID)
@@ -40,7 +40,7 @@ function LazyCurve.utils.searchEntryMenu:GetSearchEntryMenu(resultID)
         end
     end
 
-    local lazyCurveMenu = self:getExtraMenuList(groupId, leaderName)
+    local lazyCurveMenu = self:getExtraMenuList(activityInfo.groupFinderActivityGroupID, leaderName)
 
     if(not found) then
         table.insert(popupMenu, 4, lazyCurveMenu)
