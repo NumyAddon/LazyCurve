@@ -17,8 +17,8 @@ function LazyCurveShadowlands:GetInfoTable()
             groupId = 310,
             achievements = {
                 normal = 16343,
-                curve = 999999, -- achievement isn't on the beta yet
-                edge = 999999, -- achievement isn't on the beta yet
+                curve = 17107,
+                edge = 17108,
                 mythic = {
                     16346, -- Eranog
                     16347, -- Terros
