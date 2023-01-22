@@ -43,8 +43,10 @@ function LazyCurve:OnSignUp(SignUpButton)
 
 	if(resultInfo) then
 		local leaderName = resultInfo.leaderName
-		local _, _, _, groupId, _ = C_LFGList.GetActivityInfo(resultInfo.activityID)
-		local infoTable = LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, true)
+		local activityInfo = C_LFGList.GetActivityInfoTable(resultInfo.activityID)
+		local infoTable = activityInfo
+			and activityInfo.groupFinderActivityGroupID
+			and LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(activityInfo.groupFinderActivityGroupID, true)
 
 		if(infoTable) then
 			local achievementList = {}
