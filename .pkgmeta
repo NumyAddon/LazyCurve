@@ -5,6 +5,7 @@ move-folders:
     LazyCurve/modules/BFA: LazyCurve_BFA
     LazyCurve/modules/Shadowlands: LazyCurve_Shadowlands
     LazyCurve/modules/Tazavesh: LazyCurve_Tazavesh
+    LazyCurve/modules/Dragonflight: LazyCurve_Dragonflight
 
 externals:
     libs/LibStub:
