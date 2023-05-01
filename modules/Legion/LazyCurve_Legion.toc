@@ -3,6 +3,7 @@
 ## Version: @project-version@
 ## Notes: Legion module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
+## IconTexture: 982414
 ## X-License: GNU General Public License version 3 (GPLv3)
 
 ## RequiredDeps: LazyCurve

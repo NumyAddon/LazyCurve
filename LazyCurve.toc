@@ -3,6 +3,7 @@
 ## Version: @project-version@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
 ## Author: Numy
+## IconTexture: 982414
 ## X-License: GNU General Public License version 3 (GPLv3)
 ## SavedVariables:LazyCurveDB
 ## X-Curse-Project-ID: 290074
