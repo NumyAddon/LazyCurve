@@ -12,6 +12,27 @@ LazyCurveShadowlands.type = LazyCurve.MODULE_TYPE_RAID
 function LazyCurveShadowlands:GetInfoTable()
     local infoTable = {
         {
+            shortName = "ASC",
+            alternativeKeyword = "sarkareth",
+            groupId = 313,
+            achievements = {
+                normal = 18160,
+                curve = 18253,
+                edge = 18254,
+                mythic = {
+                    18151, -- Kazzara, the Hellforged
+                    18152, -- The Amalgamation Chamber
+                    18153, -- The Forgotten Experiments
+                    18155, -- Rashok, the Elder
+                    18154, -- Assault of the Zaqali
+                    18156, -- The Vigilant Steward, Zskarn
+                    18157, -- Magmorax
+                    18158, -- Echo of Neltharion
+                    18159, -- Scalecommander Sarkareth
+                },
+            },
+        },
+        {
             shortName = "VOTI",
             alternativeKeyword = "raszageth",
             groupId = 310,
