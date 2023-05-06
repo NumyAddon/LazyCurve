@@ -3,7 +3,7 @@
 ## Version: @project-version@
 ## Notes: Battle for Azeroth module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
-## IconTexture: 982414
+## IconTexture: Interface\Addons\LazyCurve_BFA\media\icon
 ## X-License: GNU General Public License version 3 (GPLv3)
 
 ## RequiredDeps: LazyCurve
