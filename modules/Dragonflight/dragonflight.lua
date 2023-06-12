@@ -22,9 +22,9 @@ function LazyCurveShadowlands:GetInfoTable()
                 mythic = {
                     18151, -- Kazzara, the Hellforged
                     18152, -- The Amalgamation Chamber
+                    18154, -- Assault of the Zaqali
                     18153, -- The Forgotten Experiments
                     18155, -- Rashok, the Elder
-                    18154, -- Assault of the Zaqali
                     18156, -- The Vigilant Steward, Zskarn
                     18157, -- Magmorax
                     18158, -- Echo of Neltharion
