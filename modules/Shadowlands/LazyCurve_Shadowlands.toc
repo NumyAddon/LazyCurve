@@ -4,7 +4,6 @@
 ## Notes: Shadowlands module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
 ## IconTexture: Interface\Addons\LazyCurve_Shadowlands\media\icon
-## X-License: GNU General Public License version 3 (GPLv3)
 
 ## RequiredDeps: LazyCurve
 

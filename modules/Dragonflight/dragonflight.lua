@@ -1,7 +1,7 @@
 -- upvalue the globals
 local _G = getfenv(0)
 local LibStub = _G.LibStub
-local LE_EXPANSION_DRAGONFLIGHT = _G.LE_EXPANSION_DRAGONFLIGHT or 9
+local LE_EXPANSION_DRAGONFLIGHT = _G.LE_EXPANSION_DRAGONFLIGHT
 
 local modName = 'Dragonflight'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')

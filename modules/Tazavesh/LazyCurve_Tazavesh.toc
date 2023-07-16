@@ -1,10 +1,9 @@
 ## Interface: @toc-version-retail@
-## Title: LazyCurve - Tazavesh
+## Title: LazyCurve - Mega-dungeon
 ## Version: @project-version@
-## Notes: Tazavesh module for LazyCurve, disable if you don't want those achievement showing up
+## Notes: Mega-dungeon module for LazyCurve, disable if you don't want those achievements showing up
 ## Author: Numy
 ## IconTexture: Interface\Addons\LazyCurve_Tazavesh\media\icon
-## X-License: GNU General Public License version 3 (GPLv3)
 
 ## RequiredDeps: LazyCurve
 

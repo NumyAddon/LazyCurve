@@ -4,13 +4,9 @@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
 ## Author: Numy
 ## IconTexture: Interface\Addons\LazyCurve\media\icon
-## X-License: GNU General Public License version 3 (GPLv3)
 ## SavedVariables:LazyCurveDB
 ## X-Curse-Project-ID: 290074
 ## X-Wago-ID: XrNk086a
-
-## LoadManagers: AddonLoader
-## X-LoadOn-Always: true
 
 libs\embeds.xml
 LazyCurve.lua
