@@ -2,7 +2,6 @@
 local _G = getfenv(0)
 local LibStub = _G.LibStub
 local GetAddOnMetadata = _G.GetAddOnMetadata or _G.C_AddOns.GetAddOnMetadata
-local InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory
 local tonumber = _G.tonumber
 local GetAchievementInfo = _G.GetAchievementInfo
 local pairs = _G.pairs
@@ -166,9 +165,7 @@ function Config:RegisterOptions()
 end
 
 function Config:OpenConfig()
-	-- after a reload, you need to open to category twice to actually open the correct page
-	InterfaceOptionsFrame_OpenToCategory('LazyCurve')
-	InterfaceOptionsFrame_OpenToCategory('LazyCurve')
+	Settings.OpenToCategory('LazyCurve')
 end
 
 function Config:GetConfig(property)
