@@ -1,0 +1,10 @@
+## Interface: @toc-version-retail@
+## Title: LazyCurve - The War Within
+## Version: @project-version@
+## Notes: TWW module for LazyCurve, disable if you don't want those achievement showing up
+## Author: Numy
+## IconTexture: Interface\Addons\LazyCurve_WarWithin\media\icon
+
+## RequiredDeps: LazyCurve
+
+TheWarWIthin.lua

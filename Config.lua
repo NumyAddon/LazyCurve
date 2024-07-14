@@ -1,47 +1,34 @@
 -- upvalue the globals
 local _G = getfenv(0)
 local LibStub = _G.LibStub
-local GetAddOnMetadata = _G.GetAddOnMetadata or _G.C_AddOns.GetAddOnMetadata
 local tonumber = _G.tonumber
 local GetAchievementInfo = _G.GetAchievementInfo
 local pairs = _G.pairs
-local coroutine = _G.coroutine
 
 local name = ...
+--- @class LazyCurve
 local LazyCurve = LibStub("AceAddon-3.0"):GetAddon(name);
 if not LazyCurve then return end
 
-LazyCurve.Config = LazyCurve.Config or {}
-local Config = LazyCurve.Config
+local Config = {}
+LazyCurve.Config = Config
 
-Config.version = GetAddOnMetadata(name, "Version") or ""
-
-local function getCounter(start, increment)
-	start = start or 1
-	increment = increment or 1
-	return coroutine.wrap(function()
-		local count = start
-		while true do
-			count = count + increment
-			coroutine.yield(count)
-		end
-	end)
-end
+Config.version = C_AddOns.GetAddOnMetadata(name, "Version") or ""
 
 function Config:GetOptions()
-	local orderCount = getCounter()
+	local increment = CreateCounter(1)
 	local options = {
 		type = 'group',
 		get = function(info) return Config:GetConfig(info[#info]); end,
 		set = function(info, value) return Config:SetConfig(info[#info], value); end,
 		args = {
 			version = {
-				order = orderCount(),
+				order = increment(),
 				type = "description",
 				name = "Version: " .. self.version
 			},
 			advertise = {
-				order = orderCount(),
+				order = increment(),
 				name = "Selfpromotion",
 				desc = "Adds <LazyCurve> before each 'LazyCurve' whisper",
 				descStyle = 'inline',
@@ -49,7 +36,7 @@ function Config:GetOptions()
 				type = "toggle",
 			},
 			whisperOnApply = {
-				order = orderCount(),
+				order = increment(),
 				name = "Enable auto-linking on LFG application",
 				desc = "Automatically whispers your best achievement(s) when applying to a raid.",
 				descStyle = 'inline',
@@ -57,13 +44,13 @@ function Config:GetOptions()
 				type = "toggle",
 			},
 			disableAutolinkReminder = {
-				order = orderCount(),
+				order = increment(),
 				name = "Disable the reminder when automatically whispering",
 				width = "full",
 				type = "toggle",
 			},
 			mythicThreshold = {
-				order = orderCount(),
+				order = increment(),
 				name = "Which mythic boss is the first relevant boss to link together with curve.",
 				width = 3,
 				type = "range",
@@ -73,12 +60,12 @@ function Config:GetOptions()
 				bigStep = 1,
 			},
 			mythicThresholdDesc = {
-				order = orderCount(),
+				order = increment(),
 				type = "description",
 				name = "Set to 0 to disable linking mythic achievements on LFG applying (except for edge/last boss kill). Set to 1 or higher to start linking achievements from that boss.",
 			},
 			devMode = {
-				order = orderCount(),
+				order = increment(),
 				type = "toggle",
 				name = "Enable Dev mode",
 				set = function(info, value)
@@ -96,17 +83,18 @@ function Config:GetOptions()
 	if self:GetConfig('devMode') then
 		options.childGroups = "tab"
 		options.args.devTab = {
-			order = orderCount(),
+			order = increment(),
 			name = "Dev mode",
 			type = "group",
 			args = {
 				enableSimulation = {
-					order = orderCount(),
+					order = increment(),
 					width = "full",
 					type = "toggle",
 					get = function()
 						return LazyCurve.DB.enableSimulation;
 					end,
+					--- @param value boolean
 					set = function(_, value)
 						LazyCurve.DB.enableSimulation = value
 						LazyCurve.utils.achievement:BuildAchievementKeywordMap()
@@ -115,7 +103,7 @@ function Config:GetOptions()
 					desc = "Simulate earned achievements, and simulate linking of achievements. (this can't be used to trick people into thinking you've earned achievements)",
 				},
 				addAchievement = {
-					order = orderCount(),
+					order = increment(),
 					type = "input",
 					name = "Add simulated Achievement",
 					validate = function(_, input)
@@ -128,7 +116,7 @@ function Config:GetOptions()
 					end,
 				},
 				removeAchievement = {
-					order = orderCount(),
+					order = increment(),
 					type = "select",
 					style = "dropdown",
 					name = "Remove Simulated Achievement",
@@ -144,7 +132,7 @@ function Config:GetOptions()
 					end,
 					get = function(_, _) return false end,
 					set = function(_, index, ...)
-						LazyCurve.DB.simulatedAchievements[index] = nil
+						LazyCurve.DB.simulatedAchievements[tonumber(index)] = nil
 						LazyCurve.utils.achievement:BuildAchievementKeywordMap()
 					end,
 				},
@@ -168,10 +156,12 @@ function Config:OpenConfig()
 	Settings.OpenToCategory('LazyCurve')
 end
 
+--- @param property LazyCurveOption
 function Config:GetConfig(property)
 	return LazyCurve.DB[property];
 end
 
+--- @param property LazyCurveOption
 function Config:SetConfig(property, value)
 	LazyCurve.DB[property] = value;
 end

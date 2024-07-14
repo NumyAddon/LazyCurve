@@ -1,19 +1,22 @@
+local isDF = select(4, GetBuildInfo()) < 110000;
+if isDF then return; end -- TWW+ only
+--- @todo delete check in TWW
+
 -- upvalue the globals
 local _G = getfenv(0)
 local LibStub = _G.LibStub
 local GetAchievementInfo = _G.GetAchievementInfo
 local ipairs = _G.ipairs
 local table = _G.table
-local pairs = _G.pairs
-local strfind = _G.strfind
 local C_LFGList = _G.C_LFGList
 
 local name = ...
+--- @class LazyCurve
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon(name)
 if not LazyCurve then return end
 
-LazyCurve.utils = LazyCurve.utils or {}
-LazyCurve.utils.searchEntryMenu = LazyCurve.utils.searchEntryMenu or {}
+local SearchEntryMenuUtil = {}
+LazyCurve.utils.searchEntryMenu = SearchEntryMenuUtil
 
 local function tableInsertChildren(target, tableToInsert)
     for _,child in ipairs(tableToInsert) do
@@ -22,69 +25,56 @@ local function tableInsertChildren(target, tableToInsert)
     return target
 end
 
-function LazyCurve.utils.searchEntryMenu:GetSearchEntryMenu(resultID)
+--- @param resultID number
+function SearchEntryMenuUtil:ExtendMenu(resultID, rootDescription)
+    local resultTable = C_LFGList.GetSearchResultInfo(resultID);
+    local activityInfo = C_LFGList.GetActivityInfoTable(resultTable.activityID)
+    local leaderName = resultTable.leaderName
+    local groupID = activityInfo.groupFinderActivityGroupID
+    local infoTable = self:GetInfoTableByActivityGroup(groupID)
 
-    local tempResultTable = C_LFGList.GetSearchResultInfo(resultID);
-    local activityInfo = C_LFGList.GetActivityInfoTable(tempResultTable.activityID)
-    local leaderName = tempResultTable.leaderName
+    rootDescription:QueueDivider();
+    rootDescription:QueueTitle(LazyCurve.PREFIX);
+    local addedItems = self:AppendAchievements(rootDescription, infoTable, leaderName)
 
-    local popupMenu = LazyCurve.hooks.LFGListUtil_GetSearchEntryMenu(resultID)
-
-    local found = false
-    local menuIndex
-    for i, item in pairs(popupMenu) do
-        if(strfind(item.text, LazyCurve.PREFIX)) then
-            menuIndex = i
-            found = true
-            break
-        end
+    if not addedItems then
+        rootDescription:ClearQueuedDescriptions();
     end
-
-    local lazyCurveMenu = self:getExtraMenuList(activityInfo.groupFinderActivityGroupID, leaderName)
-
-    if(not found) then
-        table.insert(popupMenu, 4, lazyCurveMenu)
-    else
-        popupMenu[menuIndex] = lazyCurveMenu
-    end
-
-    return popupMenu
 end
 
-function LazyCurve.utils.searchEntryMenu:FormatAchievementMenuItem(achievementId, leaderName)
+function SearchEntryMenuUtil:AddAchievementItem(elementDescription, achievementId, leaderName, textPrefix)
     local _, achievementName, _ = GetAchievementInfo(achievementId)
+    textPrefix = textPrefix or ''
 
-    return {
-        text = achievementName,
-        func = function(_, leaderName, id) LazyCurve:SendAchievement(leaderName, id) end,
-        notCheckable = true,
-        arg1 = leaderName,
-        arg2 = achievementId,
-        disabled = not leaderName,
-    }
+    local button = elementDescription:CreateButton(textPrefix .. achievementName, function()
+        LazyCurve:SendAchievement(leaderName, achievementId)
+    end)
+    button:SetEnabled(leaderName ~= nil)
+
+    return button
 end
 
-function LazyCurve.utils.searchEntryMenu:GetAchievementMenu(infoTable, leaderName)
+--- @param infoTable LazyCurveActivityTable_enriched[]
+--- @param leaderName string
+--- @return boolean # true if any achievement was added, false otherwise
+function SearchEntryMenuUtil:AppendAchievements(rootDescription, infoTable, leaderName)
     local mainMenuItems = {}
 
     for _, activityTable in ipairs(infoTable) do
         local earnedAchievements = LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
         if #earnedAchievements > 0 then
             if activityTable.isLatest or (activityTable.hideRaids and #infoTable == 1) then
-                for _, achievementId in ipairs(earnedAchievements) do
-                    table.insert(mainMenuItems, 1, self:FormatAchievementMenuItem(achievementId, leaderName))
+                for _, achievementID in ipairs(earnedAchievements) do
+                    table.insert(mainMenuItems, 1, achievementID)
                 end
             else
                 local subMenuItems = {}
-                for _, achievementId in ipairs(earnedAchievements) do
-                    table.insert(subMenuItems, self:FormatAchievementMenuItem(achievementId, leaderName))
+                for _, achievementID in ipairs(earnedAchievements) do
+                    table.insert(subMenuItems,achievementID)
                 end
                 local subMenu = {
                     text = activityTable.longName,
-                    hasArrow = true,
-                    notCheckable = true,
-                    disabled = not leaderName,
-                    menuList = subMenuItems,
+                    items = subMenuItems,
                 }
                 table.insert(mainMenuItems, subMenu)
             end
@@ -96,37 +86,30 @@ function LazyCurve.utils.searchEntryMenu:GetAchievementMenu(infoTable, leaderNam
     end
 
     if #mainMenuItems == 1 then
-        local mainMenu = mainMenuItems[1]
-        mainMenu.text = LazyCurve.PREFIX .. 'Link to leader: ' .. mainMenu.text
-        return mainMenu
+        self:AddAchievementItem(rootDescription, mainMenuItems[1], leaderName, 'Link to leader: ')
+
+        return true
     end
 
-    local mainMenu =  {
-        text = LazyCurve.PREFIX .. ' Link Achievement to Leader',
-        hasArrow = true,
-        notCheckable = true,
-        disabled = not leaderName,
-        menuList = mainMenuItems,
-    }
-    return mainMenu
-end
-
-function LazyCurve.utils.searchEntryMenu:getExtraMenuList(groupId, leaderName)
-    local infoTable = self:GetInfoTableByActivityGroup(groupId)
-    local menu = self:GetAchievementMenu(infoTable, leaderName)
-
-    if not menu then
-        --no achievements
-        return {
-            text = LazyCurve.PREFIX .. ' You haven not completed any relevant achievements yet :(',
-            notCheckable = true,
-            disabled = true,
-        }
+    local elementDescription = rootDescription:CreateButton('Link Achievement to Leader');
+    for _, item in ipairs(mainMenuItems) do
+        if type(item) == 'number' then
+            self:AddAchievementItem(elementDescription, item, leaderName)
+        else
+            local subMenu = elementDescription:CreateButton(item.text);
+            for _, subItem in ipairs(item.items) do
+                self:AddAchievementItem(subMenu, subItem, leaderName)
+            end
+        end
     end
-    return menu
+
+    return true
 end
 
-function LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(groupId, groupResultsOnly)
+--- @param groupId number
+--- @param groupResultsOnly true?
+--- @return LazyCurveActivityTable_enriched[]
+function SearchEntryMenuUtil:GetInfoTableByActivityGroup(groupId, groupResultsOnly)
     local resultTable = {}
     local allInfo = {}
     local nonRaids = {}

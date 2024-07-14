@@ -10,22 +10,23 @@ local strupper = _G.strupper
 local gsub = _G.gsub
 
 local name = ...
+--- @class LazyCurve
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon(name)
 if not LazyCurve then return end
 
-LazyCurve.utils = LazyCurve.utils or {}
-LazyCurve.utils.achievement = LazyCurve.utils.achievement or {}
-LazyCurve.utils.achievement.achievementKeywordMap = {}
+local AchiementUtil = {}
+LazyCurve.utils.achievement = AchiementUtil
+AchiementUtil.achievementKeywordMap = {}
 
-function LazyCurve.utils.achievement:IsAchievementEarned(achievementId)
-    if LazyCurve.DB.enableSimulation and LazyCurve.DB.simulatedAchievements[achievementId] then
+function AchiementUtil:IsAchievementEarned(achievementID)
+    if LazyCurve.DB.enableSimulation and LazyCurve.DB.simulatedAchievements[achievementID] then
         return true
     end
-    local _, _, _, completed, _ = GetAchievementInfo(achievementId);
+    local _, _, _, completed, _ = GetAchievementInfo(achievementID);
     return completed or false
 end
 
-function LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable, applyMythicThreshold)
+function AchiementUtil:GetHighestEarnedAchievement(activityTable, applyMythicThreshold)
     local ret = {}
 
     if self:IsAchievementEarned(activityTable.achievements.edge) then
@@ -50,22 +51,25 @@ function LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable, 
     return ret
 end
 
-function LazyCurve.utils.achievement:GetHighestEarnedMythicAchievement(activityTable, applyMythicThreshold)
+--- @param activityTable LazyCurveActivityTable
+--- @param applyMythicThreshold true?
+--- @return number?
+function AchiementUtil:GetHighestEarnedMythicAchievement(activityTable, applyMythicThreshold)
     local earnedMythic
     local threshold = -1
     if applyMythicThreshold then
         threshold = LazyCurve.DB.mythicThreshold
         if threshold == 0 then threshold = 999 end
     end
-    for i, achievementId in ipairs(activityTable.achievements.mythic) do
-        if i >= threshold and  self:IsAchievementEarned(achievementId) then
-            earnedMythic = achievementId
+    for i, achievementID in ipairs(activityTable.achievements.mythic) do
+        if i >= threshold and  self:IsAchievementEarned(achievementID) then
+            earnedMythic = achievementID
         end
     end
     return earnedMythic
 end
 
-function LazyCurve.utils.achievement:BuildAchievementKeywordMap()
+function AchiementUtil:BuildAchievementKeywordMap()
     local map = {}
     for _, module in LazyCurve:IterateModules() do
         for _, activityTable in ipairs(LazyCurve.utils.module:GetModuleInfoTable(module)) do
@@ -90,7 +94,8 @@ function LazyCurve.utils.achievement:BuildAchievementKeywordMap()
     self.achievementKeywordMap = map
 end
 
-function LazyCurve.utils.achievement:GetAchievementKeywordMap()
+--- @return table<string, number> # [keyword] = achievementID
+function AchiementUtil:GetAchievementKeywordMap()
     if not self.achievementKeywordMap then
         self:BuildAchievementKeywordMap()
     end
@@ -98,12 +103,16 @@ function LazyCurve.utils.achievement:GetAchievementKeywordMap()
     return self.achievementKeywordMap
 end
 
-function LazyCurve.utils.achievement:ReplaceKeywordWithAchievementLink(message, keyword, achievementId)
+--- @param message string
+--- @param keyword string
+--- @param achievementID number
+--- @return string
+function AchiementUtil:ReplaceKeywordWithAchievementLink(message, keyword, achievementID)
     keyword = strupper(keyword)
     if strfind(message, keyword) then
         local found, _ = strfind(message, keyword)
         while(found ~= nil) do
-            message, _ = gsub(message, keyword, GetAchievementLink(achievementId))
+            message, _ = gsub(message, keyword, GetAchievementLink(achievementID))
             found, _ = strfind(message, keyword)
         end
     end

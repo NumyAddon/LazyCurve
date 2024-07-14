@@ -12,8 +12,7 @@ local LE_EXPANSION_LEVEL_CURRENT = _G.LE_EXPANSION_LEVEL_CURRENT
 
 local name = ...
 
-LazyCurveDB = LazyCurveDB or {}
-
+--- @class LazyCurve: AceAddon, AceConsole-3.0, AceHook-3.0, AceEvent-3.0
 local LazyCurve = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3.0', 'AceEvent-3.0');
 if not LazyCurve then return end
 
@@ -23,15 +22,17 @@ LazyCurve.MODULE_TYPE_RAID = 'raid'
 LazyCurve.MODULE_TYPE_OTHER = 'other'
 
 LazyCurve.utils = {}
+--- @private
 LazyCurve.lastMsgTime = 0
 
-
+--- @private
 function LazyCurve:OnCancel(CancelButton)
 	if(self.DB.enableSimulation) then
 		LazyCurve:OnSignUp(CancelButton)
 	end
 end
 
+--- @private
 function LazyCurve:OnSignUp(SignUpButton)
 	if(self.DB.whisperOnApply ~= true) then
 		return
@@ -87,16 +88,27 @@ function LazyCurve:OnSignUp(SignUpButton)
 	end
 end
 
+--- @private
+--- @todo remove in TWW
 function LazyCurve:LFGListUtil_GetSearchEntryMenu(resultID)
 	return self.utils.searchEntryMenu:GetSearchEntryMenu(resultID)
 end
 
+--- @private
+function LazyCurve:OnMenuOpen(owner, rootDescription)
+    local resultID = owner.resultID
+    if not resultID then return end
+    self.utils.searchEntryMenu:ExtendMenu(resultID, rootDescription)
+end
+
+--- @private
 function LazyCurve:SimulationPrint(...)
 	if(self.DB.enableSimulation) then
 		self:Print('[sim active]', ...)
 	end
 end
 
+--- @private
 function LazyCurve:ProcessMsg(message)
 	local original = message
 
@@ -129,14 +141,17 @@ function LazyCurve:ProcessMsg(message)
 	return message
 end
 
+--- @private
 function LazyCurve:BNSendWhisper(id, msg)
 	self.hooks.BNSendWhisper(id, self:ProcessMsg(msg))
 end
 
+--- @private
 function LazyCurve:SendChatMessage(msg, chatType, language, channel)
 	self.hooks.SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
 end
 
+--- @private
 function LazyCurve:SendAchievement(leaderName, achievementId)
 	local message = GetAchievementLink(achievementId)
 	if(self.DB.advertise) then
@@ -149,15 +164,23 @@ function LazyCurve:SendAchievement(leaderName, achievementId)
 	self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
 end
 
+--- @private
 function LazyCurve:OnInitialize()
-	self.DB = LazyCurveDB
+    LazyCurveDB = LazyCurveDB or {}
+	self.DB = LazyCurveDB --[[@as LazyCurveDB]]
 	self:InitDefaults()
 
 	self.Config:Initialize()
 
 	self:RawHook('SendChatMessage', true)
 	self:RawHook('BNSendWhisper', true)
-	self:RawHook('LFGListUtil_GetSearchEntryMenu', true)
+	if LFGListUtil_GetSearchEntryMenu then --- @todo remove in TWW
+	    self:RawHook('LFGListUtil_GetSearchEntryMenu', true)
+    elseif Menu and Menu.ModifyMenu then
+        Menu.ModifyMenu('MENU_LFG_FRAME_SEARCH_ENTRY', function(owner, rootDescription)
+            self:OnMenuOpen(owner, rootDescription)
+        end)
+	end
 	LFGListApplicationDialog.SignUpButton:HookScript('OnClick', function(button) self:OnSignUp(button) end)
 	LFGListApplicationDialog.CancelButton:HookScript('OnClick', function(button) self:OnCancel(button) end)
 
@@ -167,12 +190,14 @@ function LazyCurve:OnInitialize()
 	self:RegisterEvent('ACHIEVEMENT_EARNED', function() self.utils.achievement:BuildAchievementKeywordMap() end);
 
 	C_Timer.After(15, function()
-		--for some reason, some achievements don't properly load the first time you log in; so maybe delaying it helps
+		-- achievements aren't loaded on login; so delay it, too lazy to find the proper event though :)
 		self.utils.achievement:BuildAchievementKeywordMap()
 	end)
 end
 
+--- @private
 function LazyCurve:InitDefaults()
+    --- @type LazyCurveDB
 	local defaults = {
 		advertise = true,
 

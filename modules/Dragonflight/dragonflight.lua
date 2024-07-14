@@ -4,12 +4,15 @@ local LibStub = _G.LibStub
 local LE_EXPANSION_DRAGONFLIGHT = _G.LE_EXPANSION_DRAGONFLIGHT
 
 local modName = 'Dragonflight'
+--- @type LazyCurve
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-local LazyCurveShadowlands = LazyCurve:NewModule(modName)
-LazyCurveShadowlands.EXPANSION = LE_EXPANSION_DRAGONFLIGHT
-LazyCurveShadowlands.type = LazyCurve.MODULE_TYPE_RAID
+--- @class LazyCurveDragonFlight: AceModule
+local Module = LazyCurve:NewModule(modName)
+Module.EXPANSION = LE_EXPANSION_DRAGONFLIGHT
+Module.type = LazyCurve.MODULE_TYPE_RAID
 
-function LazyCurveShadowlands:GetInfoTable()
+function Module:GetInfoTable()
+    --- @type LazyCurveActivityTable[]
     local infoTable = {
         {
             shortName = "ATDH",
