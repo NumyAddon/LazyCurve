@@ -31,7 +31,7 @@ function SearchEntryMenuUtil:ExtendMenu(resultID, rootDescription)
     local activityInfo = C_LFGList.GetActivityInfoTable(resultTable.activityID)
     local leaderName = resultTable.leaderName
     local groupID = activityInfo.groupFinderActivityGroupID
-    local infoTable = self:GetInfoTableByActivityGroup(groupID)
+    local infoTable = self:GetInfoTableByActivityGroup(groupID, true)
 
     rootDescription:QueueDivider();
     rootDescription:QueueTitle(LazyCurve.PREFIX);
@@ -63,7 +63,7 @@ function SearchEntryMenuUtil:AppendAchievements(rootDescription, infoTable, lead
     for _, activityTable in ipairs(infoTable) do
         local earnedAchievements = LazyCurve.utils.achievement:GetHighestEarnedAchievement(activityTable)
         if #earnedAchievements > 0 then
-            if activityTable.isLatest or (activityTable.hideRaids and #infoTable == 1) then
+            if activityTable.isLatest or (activityTable.hideRaids and #infoTable == 1) or #earnedAchievements == 1 then
                 for _, achievementID in ipairs(earnedAchievements) do
                     table.insert(mainMenuItems, 1, achievementID)
                 end
@@ -85,13 +85,13 @@ function SearchEntryMenuUtil:AppendAchievements(rootDescription, infoTable, lead
         return false
     end
 
+    local elementDescription;
     if #mainMenuItems == 1 then
-        self:AddAchievementItem(rootDescription, mainMenuItems[1], leaderName, 'Link to leader: ')
-
-        return true
+        elementDescription = rootDescription;
+    else
+        elementDescription = rootDescription:CreateButton('Link Achievements to Leader');
     end
 
-    local elementDescription = rootDescription:CreateButton('Link Achievement to Leader');
     for _, item in ipairs(mainMenuItems) do
         if type(item) == 'number' then
             self:AddAchievementItem(elementDescription, item, leaderName)

@@ -8,7 +8,7 @@ local GetTime = _G.GetTime
 local GetAchievementLink = _G.GetAchievementLink
 local C_Timer = _G.C_Timer
 local LFGListApplicationDialog = _G.LFGListApplicationDialog
-local LE_EXPANSION_LEVEL_CURRENT = _G.LE_EXPANSION_LEVEL_CURRENT
+local LE_EXPANSION_DRAGONFLIGHT = _G.LE_EXPANSION_DRAGONFLIGHT
 
 local name = ...
 
@@ -17,7 +17,7 @@ local LazyCurve = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceH
 if not LazyCurve then return end
 
 LazyCurve.PREFIX = '<LazyCurve>'
-LazyCurve.CURRENT_EXPANSION = LE_EXPANSION_LEVEL_CURRENT
+LazyCurve.CURRENT_EXPANSION = LE_EXPANSION_DRAGONFLIGHT
 LazyCurve.MODULE_TYPE_RAID = 'raid'
 LazyCurve.MODULE_TYPE_OTHER = 'other'
 
