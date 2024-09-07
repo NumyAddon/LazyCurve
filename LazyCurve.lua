@@ -1,5 +1,4 @@
 -- upvalue the globals
-local _G = getfenv(0)
 local LibStub = _G.LibStub
 local C_LFGList = _G.C_LFGList
 local ipairs = _G.ipairs
@@ -8,16 +7,17 @@ local GetTime = _G.GetTime
 local GetAchievementLink = _G.GetAchievementLink
 local C_Timer = _G.C_Timer
 local LFGListApplicationDialog = _G.LFGListApplicationDialog
-local LE_EXPANSION_DRAGONFLIGHT = _G.LE_EXPANSION_DRAGONFLIGHT
+local LE_EXPANSION_WAR_WITHIN = _G.LE_EXPANSION_WAR_WITHIN
 
 local name = ...
 
 --- @class LazyCurve: AceAddon, AceConsole-3.0, AceHook-3.0, AceEvent-3.0
 local LazyCurve = LibStub('AceAddon-3.0'):NewAddon(name, 'AceConsole-3.0', 'AceHook-3.0', 'AceEvent-3.0');
 if not LazyCurve then return end
+_G.LazyCurve = LazyCurve
 
 LazyCurve.PREFIX = '<LazyCurve>'
-LazyCurve.CURRENT_EXPANSION = LE_EXPANSION_DRAGONFLIGHT
+LazyCurve.CURRENT_EXPANSION = LE_EXPANSION_WAR_WITHIN
 LazyCurve.MODULE_TYPE_RAID = 'raid'
 LazyCurve.MODULE_TYPE_OTHER = 'other'
 

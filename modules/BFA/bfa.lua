@@ -6,11 +6,12 @@ local LE_EXPANSION_BATTLE_FOR_AZEROTH = _G.LE_EXPANSION_BATTLE_FOR_AZEROTH
 
 local modName = 'BattleForAzeroth'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-local LazyCurveBFA = LazyCurve:NewModule(modName)
-LazyCurveBFA.EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH
-LazyCurveBFA.type = LazyCurve.MODULE_TYPE_RAID
+local Module = LazyCurve:NewModule(modName)
+Module.EXPANSION = LE_EXPANSION_BATTLE_FOR_AZEROTH
+Module.type = LazyCurve.MODULE_TYPE_RAID
+Module.shortName = "BFA"
 
-function LazyCurveBFA:GetInfoTable()
+function Module:GetInfoTable()
     local faction, _ = UnitFactionGroup('player');
     local BODConclave = faction == 'Horde' and 13300 or 13298
     local BODNm = faction == 'Horde' and 13291 or 13288

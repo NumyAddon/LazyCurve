@@ -72,7 +72,9 @@ end
 function AchiementUtil:BuildAchievementKeywordMap()
     local map = {}
     for _, module in LazyCurve:IterateModules() do
-        for _, activityTable in ipairs(LazyCurve.utils.module:GetModuleInfoTable(module)) do
+        local infoTable = LazyCurve.utils.module:GetModuleInfoTable(module)
+        local count = #infoTable
+        for i, activityTable in ipairs(infoTable) do
             if activityTable.isLatest then
                 map.curve = activityTable.achievements.curve
                 map.edge = activityTable.achievements.edge
@@ -81,6 +83,7 @@ function AchiementUtil:BuildAchievementKeywordMap()
             local activityNames = {
                 activityTable.shortName,
                 activityTable.alternativeKeyword,
+                module.shortName and (module.shortName .. (count - i + 1)) or nil,
             }
 
             for _, activityName in ipairs(activityNames) do

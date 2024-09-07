@@ -1,15 +1,16 @@
 -- upvalue the globals
 local _G = getfenv(0)
 local LibStub = _G.LibStub
-local LE_EXPANSION_DRAGONFLIGHT = _G.LE_EXPANSION_DRAGONFLIGHT
+local LE_EXPANSION_WAR_WITHIN = _G.LE_EXPANSION_WAR_WITHIN
 
 local modName = 'Tazavesh'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-local LazyCurveTazavesh = LazyCurve:NewModule(modName)
-LazyCurveTazavesh.EXPANSION = LE_EXPANSION_DRAGONFLIGHT
-LazyCurveTazavesh.type = LazyCurve.MODULE_TYPE_OTHER
+local Module = LazyCurve:NewModule(modName)
+Module.EXPANSION = LE_EXPANSION_WAR_WITHIN
+Module.type = LazyCurve.MODULE_TYPE_OTHER
+Module.shortName = "DUNG"
 
-function LazyCurveTazavesh:GetInfoTable()
+function Module:GetInfoTable()
     local infoTable = {
         {
             hideRaids = true,

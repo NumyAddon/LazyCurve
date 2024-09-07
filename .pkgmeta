@@ -6,7 +6,7 @@ move-folders:
     LazyCurve/modules/Shadowlands: LazyCurve_Shadowlands
     LazyCurve/modules/Tazavesh: LazyCurve_Tazavesh
     LazyCurve/modules/Dragonflight: LazyCurve_Dragonflight
-    #LazyCurve/modules/WarWithin: LazyCurve_WarWithin # will enable it nearer to season start
+    LazyCurve/modules/WarWithin: LazyCurve_WarWithin
 
 externals:
     libs/LibStub:

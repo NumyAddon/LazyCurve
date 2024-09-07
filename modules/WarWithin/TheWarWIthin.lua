@@ -10,31 +10,31 @@ local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 local Module = LazyCurve:NewModule(modName)
 Module.EXPANSION = LE_EXPANSION_WAR_WITHIN
 Module.type = LazyCurve.MODULE_TYPE_RAID
+Module.shortName = "TWW"
 
 function Module:GetInfoTable()
     --- @type LazyCurveActivityTable[]
     local infoTable = {
-        --{
-        --    shortName = "ATDH",
-        --    alternativeKeyword = "fyrakk",
-        --    groupId = 319,
-        --    achievements = {
-        --        normal = 19331,
-        --        curve = 19350,
-        --        edge = 19351,
-        --        mythic = {
-        --            19335, -- Gnarlroot
-        --            19336, -- Igira the Cruel
-        --            19337, -- Volcoross
-        --            19338, -- Council of Dreams
-        --            19339, -- Larodar, Keeper of the Flame
-        --            19340, -- Nymue, Weaver of the Cycle
-        --            19341, -- Smolderon
-        --            19342, -- Tindral Sageswift, Seer of the Flame
-        --            19343, -- Fyrakk the Blazing
-        --        },
-        --    },
-        --},
+        {
+            shortName = "NEPAL",
+            alternativeKeyword = "ansurek",
+            groupId = 362,
+            achievements = {
+                normal = 40244,
+                curve = 40253,
+                edge = 40254,
+                mythic = {
+                    40236, -- Ulgrax the Devourer
+                    40237, -- The Bloodbound Horror
+                    40238, -- Sikran, Captain of the Sureki
+                    40239, -- Rasha'nan
+                    40240, -- Broodtwister Ovi'nax
+                    40241, -- Nexus-Princess Ky'veza
+                    40242, -- The Silken Court
+                    40243, -- Queen Ansurek
+                },
+            },
+        },
     }
     return infoTable
 end

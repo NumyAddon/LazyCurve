@@ -5,11 +5,12 @@ local LE_EXPANSION_SHADOWLANDS = _G.LE_EXPANSION_SHADOWLANDS
 
 local modName = 'Shadowlands'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-local LazyCurveShadowlands = LazyCurve:NewModule(modName)
-LazyCurveShadowlands.EXPANSION = LE_EXPANSION_SHADOWLANDS
-LazyCurveShadowlands.type = LazyCurve.MODULE_TYPE_RAID
+local Module = LazyCurve:NewModule(modName)
+Module.EXPANSION = LE_EXPANSION_SHADOWLANDS
+Module.type = LazyCurve.MODULE_TYPE_RAID
+Module.shortName = "SL"
 
-function LazyCurveShadowlands:GetInfoTable()
+function Module:GetInfoTable()
     local infoTable = {
         {
             shortName = "SFO",

@@ -5,11 +5,12 @@ local LE_EXPANSION_LEGION = _G.LE_EXPANSION_LEGION
 
 local modName = 'Legion'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
-local LazyCurveLegion = LazyCurve:NewModule(modName)
-LazyCurveLegion.EXPANSION = LE_EXPANSION_LEGION
-LazyCurveLegion.type = LazyCurve.MODULE_TYPE_RAID
+local Module = LazyCurve:NewModule(modName)
+Module.EXPANSION = LE_EXPANSION_LEGION
+Module.type = LazyCurve.MODULE_TYPE_RAID
+Module.shortName = "LEGION"
 
-function LazyCurveLegion:GetInfoTable()
+function Module:GetInfoTable()
     local infoTable = {
         {
             shortName = "ABT",

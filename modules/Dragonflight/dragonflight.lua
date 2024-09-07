@@ -10,6 +10,7 @@ local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 local Module = LazyCurve:NewModule(modName)
 Module.EXPANSION = LE_EXPANSION_DRAGONFLIGHT
 Module.type = LazyCurve.MODULE_TYPE_RAID
+Module.shortName = "DF"
 
 function Module:GetInfoTable()
     --- @type LazyCurveActivityTable[]
