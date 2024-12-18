@@ -1,15 +1,3 @@
-local isDF = select(4, GetBuildInfo()) < 110000;
-if isDF then return; end -- TWW+ only
---- @todo delete check in TWW
-
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
-local GetAchievementInfo = _G.GetAchievementInfo
-local ipairs = _G.ipairs
-local table = _G.table
-local C_LFGList = _G.C_LFGList
-
 local name = ...
 --- @class LazyCurve
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon(name)
@@ -28,7 +16,7 @@ end
 --- @param resultID number
 function SearchEntryMenuUtil:ExtendMenu(resultID, rootDescription)
     local resultTable = C_LFGList.GetSearchResultInfo(resultID);
-    local activityInfo = C_LFGList.GetActivityInfoTable(resultTable.activityID)
+    local activityInfo = C_LFGList.GetActivityInfoTable(resultTable.activityID or resultTable.activityIDs[1])
     local leaderName = resultTable.leaderName
     local groupID = activityInfo.groupFinderActivityGroupID
     local infoTable = self:GetInfoTableByActivityGroup(groupID, true)
@@ -55,7 +43,7 @@ function SearchEntryMenuUtil:AddAchievementItem(elementDescription, achievementI
 end
 
 --- @param infoTable LazyCurveActivityTable_enriched[]
---- @param leaderName string
+--- @param leaderName string?
 --- @return boolean # true if any achievement was added, false otherwise
 function SearchEntryMenuUtil:AppendAchievements(rootDescription, infoTable, leaderName)
     local mainMenuItems = {}

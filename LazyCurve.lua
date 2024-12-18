@@ -41,10 +41,9 @@ function LazyCurve:OnSignUp(SignUpButton)
 	local resultID = dialog.resultID
 	local resultInfo = C_LFGList.GetSearchResultInfo(resultID)
 
-
 	if(resultInfo) then
 		local leaderName = resultInfo.leaderName
-		local activityInfo = C_LFGList.GetActivityInfoTable(resultInfo.activityID)
+		local activityInfo = C_LFGList.GetActivityInfoTable(resultInfo.activityID or resultInfo.activityIDs[1])
 		local infoTable = activityInfo
 			and activityInfo.groupFinderActivityGroupID
 			and LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(activityInfo.groupFinderActivityGroupID, true)

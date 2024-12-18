@@ -15,4 +15,3 @@ Config.lua
 Utils_Achievement.lua
 Utils_Module.lua
 Utils_SearchEntryMenu.lua
-Utils_SearchEntryMenuDF.lua
