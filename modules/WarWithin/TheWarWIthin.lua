@@ -16,6 +16,26 @@ function Module:GetInfoTable()
     --- @type LazyCurveActivityTable[]
     local infoTable = {
         {
+            shortName = "LoU",
+            alternativeKeyword = "gallywix",
+            groupId = 377,
+            achievements = {
+                normal = 41222,
+                curve = 41298,
+                edge = 41297,
+                mythic = {
+                    41229, -- Vexie and the Geargrinders
+                    41230, -- Cauldron of Carnage
+                    41231, -- Rik Reverb
+                    41232, -- Stix Bunkjunker
+                    41233, -- Sprocketmonger Lockenstock
+                    41234, -- The One-Armed Bandit
+                    41235, -- Mug'Zee, Heads of Security
+                    41236, -- Chrome King Gallywix
+                },
+            },
+        },
+        {
             shortName = "NEPAL",
             alternativeKeyword = "ansurek",
             groupId = 362,
