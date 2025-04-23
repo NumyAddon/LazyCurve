@@ -108,15 +108,26 @@ end
 
 --- @param message string
 --- @param keyword string
+--- @return boolean
+local function findKeywordInMessage(message, keyword)
+    return (message == keyword)
+        or (not not message:find('^' .. keyword .. '[^%w]'))
+        or (not not message:find('[^%w]' .. keyword .. '[^%w]'))
+        or (not not message:find('[^%w]' .. keyword .. '$'))
+end
+
+--- @param message string
+--- @param keyword string
 --- @param achievementID number
 --- @return string
 function AchiementUtil:ReplaceKeywordWithAchievementLink(message, keyword, achievementID)
     keyword = strupper(keyword)
-    if strfind(message, keyword) then
-        local found, _ = strfind(message, keyword)
-        while(found ~= nil) do
-            message, _ = gsub(message, keyword, GetAchievementLink(achievementID))
-            found, _ = strfind(message, keyword)
+    if message:find(keyword) then
+        local found = findKeywordInMessage(message, keyword)
+        print(message, keyword, found)
+        while(found) do
+            message = message:gsub(keyword, GetAchievementLink(achievementID))
+            found = findKeywordInMessage(message, keyword)
         end
     end
     return message
