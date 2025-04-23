@@ -14,6 +14,7 @@ local function tableInsertChildren(target, tableToInsert)
 end
 
 --- @param resultID number
+--- @param rootDescription RootMenuDescriptionProxy
 function SearchEntryMenuUtil:ExtendMenu(resultID, rootDescription)
     local resultTable = C_LFGList.GetSearchResultInfo(resultID);
     local activityInfo = C_LFGList.GetActivityInfoTable(resultTable.activityID or resultTable.activityIDs[1])
@@ -30,6 +31,11 @@ function SearchEntryMenuUtil:ExtendMenu(resultID, rootDescription)
     end
 end
 
+--- @param elementDescription ElementMenuDescriptionProxy|RootMenuDescriptionProxy
+--- @param achievementId number
+--- @param leaderName string
+--- @param textPrefix string?
+--- @return ElementMenuDescriptionProxy button
 function SearchEntryMenuUtil:AddAchievementItem(elementDescription, achievementId, leaderName, textPrefix)
     local _, achievementName, _ = GetAchievementInfo(achievementId)
     textPrefix = textPrefix or ''
@@ -42,6 +48,7 @@ function SearchEntryMenuUtil:AddAchievementItem(elementDescription, achievementI
     return button
 end
 
+--- @param rootDescription RootMenuDescriptionProxy
 --- @param infoTable LazyCurveActivityTable_enriched[]
 --- @param leaderName string?
 --- @return boolean # true if any achievement was added, false otherwise
@@ -58,7 +65,7 @@ function SearchEntryMenuUtil:AppendAchievements(rootDescription, infoTable, lead
             else
                 local subMenuItems = {}
                 for _, achievementID in ipairs(earnedAchievements) do
-                    table.insert(subMenuItems,achievementID)
+                    table.insert(subMenuItems, achievementID)
                 end
                 local subMenu = {
                     text = activityTable.longName,

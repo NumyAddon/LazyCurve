@@ -24,6 +24,7 @@
 ---@class LazyCurveDB
 ---@field advertise boolean
 ---@field whisperOnApply boolean
+---@field replaceKeywordsInChatMessages boolean
 ---@field disableAutolinkReminder boolean
 ---@field mythicThreshold number
 ---@field devMode boolean

@@ -35,6 +35,14 @@ function Config:GetOptions()
 				width = "full",
 				type = "toggle",
 			},
+			replaceKeywordsInChatMessages = {
+                order = increment(),
+                name = "Replace keywords in chat messages",
+                desc = "Replace keywords in chat messages with the corresponding achievement link. Such as 'EDGE' or 'CURVE'.",
+                descStyle = 'inline',
+                width = "full",
+                type = "toggle",
+            },
 			whisperOnApply = {
 				order = increment(),
 				name = "Enable auto-linking on LFG application",
