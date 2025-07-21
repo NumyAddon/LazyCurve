@@ -27,7 +27,7 @@ LazyCurve.lastMsgTime = 0
 
 --- @private
 function LazyCurve:OnCancel(CancelButton)
-    if(self.DB.enableSimulation) then
+    if (self.DB.enableSimulation) then
         LazyCurve:OnSignUp(CancelButton)
     end
 end
@@ -35,7 +35,7 @@ end
 --- @private
 --- @param SignUpButton LFGListApplicationDialog_SignUpButton|LFGListApplicationDialog_CancelButton
 function LazyCurve:OnSignUp(SignUpButton)
-    if(self.DB.whisperOnApply ~= true) then
+    if (self.DB.whisperOnApply ~= true) then
         return
     end
     --- @type LFGListApplicationDialog
@@ -43,14 +43,14 @@ function LazyCurve:OnSignUp(SignUpButton)
     local resultID = dialog.resultID
     local resultInfo = C_LFGList.GetSearchResultInfo(resultID)
 
-    if(resultInfo) then
+    if (resultInfo) then
         local leaderName = resultInfo.leaderName
         local activityInfo = C_LFGList.GetActivityInfoTable(resultInfo.activityID or resultInfo.activityIDs[1])
         local infoTable = activityInfo
             and activityInfo.groupFinderActivityGroupID
             and LazyCurve.utils.searchEntryMenu:GetInfoTableByActivityGroup(activityInfo.groupFinderActivityGroupID, true)
 
-        if(infoTable) then
+        if (infoTable) then
             local achievementList = {}
 
             for _, activityTable in ipairs(infoTable) do
@@ -67,15 +67,15 @@ function LazyCurve:OnSignUp(SignUpButton)
                 message = message .. ' ' .. GetAchievementLink(achievementId)
             end
             if message == '' then
-                if(self.DB.enableSimulation) then self:SimulationPrint('no achievements found to whisper') end
+                if (self.DB.enableSimulation) then self:SimulationPrint('no achievements found to whisper') end
                 return
             end
 
-            if(self.DB.advertise) then
+            if (self.DB.advertise) then
                 message = self.PREFIX .. message;
             end
 
-            if(self.DB.enableSimulation) then
+            if (self.DB.enableSimulation) then
                 self:SimulationPrint('Intent to whisper "', leaderName, '" with message:', message)
                 return
             end
@@ -100,7 +100,7 @@ end
 
 --- @private
 function LazyCurve:SimulationPrint(...)
-    if(self.DB.enableSimulation) then
+    if (self.DB.enableSimulation) then
         self:Print('[sim active]', ...)
     end
 end
@@ -130,11 +130,11 @@ function LazyCurve:ProcessMsg(message)
         message = self.utils.achievement.ReplaceKeywordWithAchievementLink(self, message, 'edge', edge);
     end
 
-    if(original ~= message and self.DB.advertise) then
+    if (original ~= message and self.DB.advertise) then
         message = self.PREFIX .. message
     end
 
-    if(original ~= message and self.DB.enableSimulation) then
+    if (original ~= message and self.DB.enableSimulation) then
         self:SimulationPrint('Intent to replace message with:', message)
         return original
     end
@@ -149,16 +149,20 @@ end
 
 --- @private
 function LazyCurve:SendChatMessage(msg, chatType, language, channel)
-    self.hooks.SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
+    if C_ChatInfo.SendChatMessage then
+        self.hooks[C_ChatInfo].SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
+    else
+        self.hooks.SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
+    end
 end
 
 --- @private
 function LazyCurve:SendAchievement(leaderName, achievementId)
     local message = GetAchievementLink(achievementId)
-    if(self.DB.advertise) then
+    if (self.DB.advertise) then
         message = self.PREFIX .. message
     end
-    if(self.DB.enableSimulation) then
+    if (self.DB.enableSimulation) then
         self:SimulationPrint('Intent to whisper "', leaderName, '" with message:', message)
         return
     end
@@ -173,7 +177,11 @@ function LazyCurve:OnInitialize()
 
     self.Config:Initialize()
 
-    self:RawHook('SendChatMessage', true)
+    if C_ChatInfo.SendChatMessage then
+        self:RawHook(C_ChatInfo, 'SendChatMessage', true)
+    else
+        self:RawHook('SendChatMessage', true)
+    end
     self:RawHook('BNSendWhisper', true)
     Menu.ModifyMenu('MENU_LFG_FRAME_SEARCH_ENTRY', function(owner, rootDescription)
         self:OnMenuOpen(owner, rootDescription)

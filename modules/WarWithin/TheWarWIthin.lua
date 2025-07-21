@@ -16,6 +16,26 @@ function Module:GetInfoTable()
     --- @type LazyCurveActivityTable[]
     local infoTable = {
         {
+            shortName = "MFO",
+            alternativeKeyword = "dimensius",
+            groupId = 378,
+            achievements = {
+                normal = 41598,
+                curve = 41624,
+                edge = 41625,
+                mythic = {
+                    41604, -- Plexus Sentinel
+                    41605, -- Loom'ithar
+                    41606, -- Soulbinder Naazindhri
+                    41607, -- Forgeweaver Araz
+                    41608, -- The Soul Hunters
+                    41609, -- Fractillus
+                    41610, -- Nexus-King Salhadaar
+                    41611, -- Dimensius, the All-Devouring
+                },
+            },
+        },
+        {
             shortName = "LoU",
             alternativeKeyword = "gallywix",
             groupId = 377,
