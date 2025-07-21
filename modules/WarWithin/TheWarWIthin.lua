@@ -16,6 +16,7 @@ function Module:GetInfoTable()
     --- @type LazyCurveActivityTable[]
     local infoTable = {
         {
+            minPatch = 110200,
             shortName = "MFO",
             alternativeKeyword = "dimensius",
             groupId = 378,

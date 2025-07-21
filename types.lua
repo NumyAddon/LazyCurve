@@ -4,6 +4,7 @@
 ---@field GetInfoTable fun():LazyCurveActivityTable[] # ordered list of activities, most recent first
 
 ---@class LazyCurveActivityTable
+---@field minPatch number|nil # if set, the activity is ignored if the current patch is lower than this value
 ---@field shortName string
 ---@field alternativeKeyword string
 ---@field groupId number # Activity Group ID

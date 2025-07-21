@@ -121,6 +121,7 @@ end
 --- @param achievementID number
 --- @return string
 function AchiementUtil:ReplaceKeywordWithAchievementLink(message, keyword, achievementID)
+    if not GetAchievementLink(achievementID) then return message end
     keyword = strupper(keyword)
     if message:find(keyword) then
         local found = findKeywordInMessage(message, keyword)
