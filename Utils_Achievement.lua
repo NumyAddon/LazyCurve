@@ -124,8 +124,7 @@ function AchiementUtil:ReplaceKeywordWithAchievementLink(message, keyword, achie
     keyword = strupper(keyword)
     if message:find(keyword) then
         local found = findKeywordInMessage(message, keyword)
-        print(message, keyword, found)
-        while(found) do
+        while (found) do
             message = message:gsub(keyword, GetAchievementLink(achievementID))
             found = findKeywordInMessage(message, keyword)
         end
