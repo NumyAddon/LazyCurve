@@ -79,7 +79,7 @@ function LazyCurve:OnSignUp(SignUpButton)
                 self:SimulationPrint('Intent to whisper "', leaderName, '" with message:', message)
                 return
             end
-            self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
+            self:SendChatMessageRaw(message, 'WHISPER', nil, leaderName)
 
             if (GetTime() - LazyCurve.lastMsgTime) > 30000 and not self.DB.disableAutolinkReminder then -- 30 secs
                 LazyCurve.lastMsgTime = GetTime()
@@ -149,10 +149,15 @@ end
 
 --- @private
 function LazyCurve:SendChatMessage(msg, chatType, language, channel)
+    self:SendChatMessageRaw(self:ProcessMsg(msg), chatType, language, channel)
+end
+
+--- @private
+function LazyCurve:SendChatMessageRaw(msg, chatType, language, channel)
     if C_ChatInfo.SendChatMessage then
-        self.hooks[C_ChatInfo].SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
+        self.hooks[C_ChatInfo].SendChatMessage(msg, chatType, language, channel);
     else
-        self.hooks.SendChatMessage(self:ProcessMsg(msg), chatType, language, channel);
+        self.hooks.SendChatMessage(msg, chatType, language, channel);
     end
 end
 
@@ -166,7 +171,7 @@ function LazyCurve:SendAchievement(leaderName, achievementId)
         self:SimulationPrint('Intent to whisper "', leaderName, '" with message:', message)
         return
     end
-    self.hooks.SendChatMessage(message, 'WHISPER', nil, leaderName)
+    self:SendChatMessageRaw(message, 'WHISPER', nil, leaderName)
 end
 
 --- @private
