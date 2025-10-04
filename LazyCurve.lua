@@ -144,7 +144,11 @@ end
 
 --- @private
 function LazyCurve:BNSendWhisper(id, msg)
-    self.hooks.BNSendWhisper(id, self:ProcessMsg(msg))
+    if C_BattleNet.SendWhisper then
+        self.hooks[C_BattleNet].SendWhisper(id, self:ProcessMsg(msg))
+    else
+        self.hooks.BNSendWhisper(id, self:ProcessMsg(msg))
+    end
 end
 
 --- @private
@@ -181,13 +185,20 @@ function LazyCurve:OnInitialize()
     self:InitDefaults()
 
     self.Config:Initialize()
-
-    if C_ChatInfo.SendChatMessage then
-        self:RawHook(C_ChatInfo, 'SendChatMessage', true)
-    else
-        self:RawHook('SendChatMessage', true)
+    local toc = select(4, GetBuildInfo())
+    -- 12.0 made SendChatMessage protected in certain situations, so we can't raw hook it
+    if toc > 110000 and toc < 120000 then
+        if C_ChatInfo.SendChatMessage then
+            self:RawHook(C_ChatInfo, 'SendChatMessage', true)
+        else
+            self:RawHook('SendChatMessage', true)
+        end
+        if C_BattleNet.SendWhisper then
+            self:RawHook(C_BattleNet, 'SendWhisper', 'BNSendWhisper', true)
+        else
+            self:RawHook('BNSendWhisper', 'BNSendWhisper', true)
+        end
     end
-    self:RawHook('BNSendWhisper', true)
     Menu.ModifyMenu('MENU_LFG_FRAME_SEARCH_ENTRY', function(owner, rootDescription)
         self:OnMenuOpen(owner, rootDescription)
     end)

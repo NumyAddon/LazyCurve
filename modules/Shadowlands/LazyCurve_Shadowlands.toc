@@ -1,4 +1,4 @@
-## Interface: @toc-version-retail@
+## Interface: @toc-version-retail@,@toc-version-midnight@
 ## Title: LazyCurve - Shadowlands
 ## Version: @project-version@
 ## Notes: Shadowlands module for LazyCurve, disable if you don't want those achievement showing up

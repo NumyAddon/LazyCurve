@@ -1,4 +1,4 @@
-## Interface: @toc-version-retail@
+## Interface: @toc-version-retail@,@toc-version-midnight@
 ## Title: LazyCurve - Mega-dungeon
 ## Version: @project-version@
 ## Notes: Mega-dungeon module for LazyCurve, disable if you don't want those achievements showing up

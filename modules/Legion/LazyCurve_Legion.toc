@@ -1,4 +1,4 @@
-## Interface: @toc-version-retail@
+## Interface: @toc-version-retail@,@toc-version-midnight@
 ## Title: LazyCurve - Legion
 ## Version: @project-version@
 ## Notes: Legion module for LazyCurve, disable if you don't want those achievement showing up
