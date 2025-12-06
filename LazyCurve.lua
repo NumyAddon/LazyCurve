@@ -205,8 +205,8 @@ function LazyCurve:OnInitialize()
     LFGListApplicationDialog.SignUpButton:HookScript('OnClick', function(button) self:OnSignUp(button) end)
     LFGListApplicationDialog.CancelButton:HookScript('OnClick', function(button) self:OnCancel(button) end)
 
-    self:RegisterChatCommand('lc', self.Config.OpenConfig)
-    self:RegisterChatCommand('lazycurve', self.Config.OpenConfig)
+    self:RegisterChatCommand('lc', function() self.Config:OpenConfig(); end);
+    self:RegisterChatCommand('lazycurve', function() self.Config:OpenConfig(); end);
 
     self:RegisterEvent('ACHIEVEMENT_EARNED', function() self.utils.achievement:BuildAchievementKeywordMap() end);
 
