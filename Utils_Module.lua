@@ -1,9 +1,3 @@
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
-local C_LFGList = _G.C_LFGList
-local ipairs = _G.ipairs
-
 local name = ...
 
 local currentPatch = select(4, GetBuildInfo())

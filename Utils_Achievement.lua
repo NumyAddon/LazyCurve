@@ -1,14 +1,3 @@
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
-local table = _G.table
-local GetAchievementInfo = _G.GetAchievementInfo
-local GetAchievementLink = _G.GetAchievementLink
-local ipairs = _G.ipairs
-local strfind = _G.strfind
-local strupper = _G.strupper
-local gsub = _G.gsub
-
 local name = ...
 --- @class LazyCurve
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon(name)

@@ -1,8 +1,3 @@
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
-local LE_EXPANSION_LEGION = _G.LE_EXPANSION_LEGION
-
 local modName = 'Legion'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 local Module = LazyCurve:NewModule(modName)

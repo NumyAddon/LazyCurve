@@ -1,9 +1,3 @@
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
-local UnitFactionGroup = _G.UnitFactionGroup
-local LE_EXPANSION_BATTLE_FOR_AZEROTH = _G.LE_EXPANSION_BATTLE_FOR_AZEROTH
-
 local modName = 'BattleForAzeroth'
 local LazyCurve = LibStub('AceAddon-3.0'):GetAddon('LazyCurve')
 local Module = LazyCurve:NewModule(modName)

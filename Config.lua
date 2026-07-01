@@ -1,10 +1,3 @@
--- upvalue the globals
-local _G = getfenv(0)
-local LibStub = _G.LibStub
-local tonumber = _G.tonumber
-local GetAchievementInfo = _G.GetAchievementInfo
-local pairs = _G.pairs
-
 local name = ...
 --- @class LazyCurve
 local LazyCurve = LibStub("AceAddon-3.0"):GetAddon(name);
