@@ -6,6 +6,8 @@
 ## Version: @project-version@
 ## Notes: Easily link achievements to the LFG leader by right-clicking the group
 ## Author: Numy
+## X-GameType: [Game]
+## X-GameFamily: [Family]
 ## IconTexture: Interface\Addons\LazyCurve\media\icon
 ## SavedVariables:LazyCurveDB
 ## X-Curse-Project-ID: 290074

@@ -6,6 +6,8 @@
 ## Version: @project-version@
 ## Notes: Legion module for LazyCurve, disable if you don't want those achievement showing up
 ## Author: Numy
+## X-GameType: [Game]
+## X-GameFamily: [Family]
 ## IconTexture: Interface\Addons\LazyCurve_Legion\media\icon
 
 ## RequiredDeps: LazyCurve
